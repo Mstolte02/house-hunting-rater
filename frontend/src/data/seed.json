@@ -1,0 +1,1773 @@
+{
+  "properties": [
+    {
+      "id": 26,
+      "name": "Big Brown Round House",
+      "address": "2018 Bailey Circle",
+      "city": "Greenfield",
+      "state": "IN",
+      "zip": "46140",
+      "url": "https://www.zillow.com/homedetails/2018-Bailey-Cir-Greenfield-IN-46140/85289459_zpid/",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1929.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 4.0,
+      "bathrooms": 2.5,
+      "square_feet": 2125.0,
+      "lot_size": null,
+      "year_built": 2003,
+      "garage_spaces": 1.0,
+      "parking": "2",
+      "latitude": 39.7949798,
+      "longitude": -85.7377617,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 16:43:17",
+      "updated_at": "2026-08-09 17:07:38"
+    },
+    {
+      "id": 27,
+      "name": "Country Ranch Greenfield",
+      "address": "456 Bear Story Blvd, Greenfield, IN 46140",
+      "city": "Greenfield",
+      "state": "IN",
+      "zip": "46140",
+      "url": "https://www.zillow.com/homedetails/456-Bear-Story-Blvd-Greenfield-IN-46140/85273603_zpid/",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1880.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 3.0,
+      "bathrooms": 2.0,
+      "square_feet": 1450.0,
+      "lot_size": null,
+      "year_built": 1995,
+      "garage_spaces": 2.0,
+      "parking": "2",
+      "latitude": null,
+      "longitude": null,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 17:10:09",
+      "updated_at": "2026-08-09 17:21:43"
+    },
+    {
+      "id": 29,
+      "name": "Big Fucking Tree in the way 2.0",
+      "address": "2309 Collins Way, Greenfield, IN 46140",
+      "city": "Greenfield",
+      "state": "IN",
+      "zip": "46140",
+      "url": "https://www.zillow.com/homedetails/2309-Collins-Way-Greenfield-IN-46140/85284846_zpid/?",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1695.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 3.0,
+      "bathrooms": 2.0,
+      "square_feet": 1128.0,
+      "lot_size": null,
+      "year_built": null,
+      "garage_spaces": 1.0,
+      "parking": "2",
+      "latitude": null,
+      "longitude": null,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 17:31:38",
+      "updated_at": "2026-08-09 17:37:56"
+    },
+    {
+      "id": 30,
+      "name": "Brick Beauty",
+      "address": "942 N Mill Run Blvd greenfield, IN 46140",
+      "city": "Greenfield",
+      "state": "IN",
+      "zip": "46140",
+      "url": "https://www.zillow.com/homedetails/942-N-Mill-Run-Blvd-Greenfield-IN-46140/85288533_zpid/?",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1870.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 3.0,
+      "bathrooms": 2.0,
+      "square_feet": 1323.0,
+      "lot_size": null,
+      "year_built": null,
+      "garage_spaces": 2.0,
+      "parking": "2",
+      "latitude": null,
+      "longitude": null,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 17:47:50",
+      "updated_at": "2026-08-09 17:56:01"
+    },
+    {
+      "id": 31,
+      "name": "Redwood Town Homes",
+      "address": "2982 Red Spruce Dr, Greenfield, IN 46140",
+      "city": "Greenfield",
+      "state": "IN",
+      "zip": "46140",
+      "url": "https://www.zillow.com/apartments/greenfield-in/redwood-greenfield/CgKjkT/",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1915.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 2.0,
+      "bathrooms": 2.0,
+      "square_feet": 1294.0,
+      "lot_size": null,
+      "year_built": null,
+      "garage_spaces": 2.0,
+      "parking": "2",
+      "latitude": null,
+      "longitude": null,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 17:58:44",
+      "updated_at": "2026-08-09 18:14:42"
+    },
+    {
+      "id": 32,
+      "name": "Kensington Gardens",
+      "address": "6391 Isaac St S, McCordsville, IN 46055",
+      "city": "McCordsville",
+      "state": "IN",
+      "zip": "46055",
+      "url": "https://www.zillow.com/apartments/mccordsville-in/kensington-gardens/CrzvRh/",
+      "property_type": "House",
+      "status": "Considering",
+      "monthly_cost": 1890.0,
+      "hoa": null,
+      "property_taxes": null,
+      "insurance": null,
+      "utilities": null,
+      "deposit": null,
+      "move_in_costs": null,
+      "bedrooms": 2.0,
+      "bathrooms": 2.0,
+      "square_feet": null,
+      "lot_size": null,
+      "year_built": null,
+      "garage_spaces": 0.0,
+      "parking": "?",
+      "latitude": null,
+      "longitude": null,
+      "similarity_town": null,
+      "notes": null,
+      "pros": null,
+      "cons": null,
+      "visit_notes": null,
+      "created_at": "2026-08-09 18:25:26",
+      "updated_at": "2026-08-09 19:07:23"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Westfield Similarity",
+      "description": "How much this town resembles Westfield.",
+      "weight": 5.0,
+      "enabled": 1,
+      "scoring_method": "external",
+      "sort_order": 0,
+      "metric": "similarity:westfield",
+      "single_score": 0
+    },
+    {
+      "id": 9,
+      "name": "Work Commute",
+      "description": "Minutes of actual driving to where we go every day.",
+      "weight": 20.0,
+      "enabled": 1,
+      "scoring_method": "manual",
+      "sort_order": 8,
+      "metric": null,
+      "single_score": 0
+    },
+    {
+      "id": 10,
+      "name": "Living Spaces",
+      "description": "",
+      "weight": 40.0,
+      "enabled": 1,
+      "scoring_method": "manual",
+      "sort_order": 9,
+      "metric": null,
+      "single_score": 0
+    },
+    {
+      "id": 11,
+      "name": "Location",
+      "description": "",
+      "weight": 10.0,
+      "enabled": 1,
+      "scoring_method": "manual",
+      "sort_order": 10,
+      "metric": null,
+      "single_score": 0
+    },
+    {
+      "id": 12,
+      "name": "Schools",
+      "description": "",
+      "weight": 5.0,
+      "enabled": 1,
+      "scoring_method": "manual",
+      "sort_order": 11,
+      "metric": null,
+      "single_score": 0
+    },
+    {
+      "id": 13,
+      "name": "Safety",
+      "description": "",
+      "weight": 20.0,
+      "enabled": 1,
+      "scoring_method": "manual",
+      "sort_order": 12,
+      "metric": null,
+      "single_score": 0
+    }
+  ],
+  "subcriteria": [
+    {
+      "id": 6,
+      "category_id": 9,
+      "name": "Mark's commute",
+      "weight": 35.0,
+      "enabled": 1,
+      "metric": "commute:mark"
+    },
+    {
+      "id": 7,
+      "category_id": 9,
+      "name": "Rachel's commute",
+      "weight": 65.0,
+      "enabled": 1,
+      "metric": "commute:rachel"
+    },
+    {
+      "id": 8,
+      "category_id": 10,
+      "name": "Bathroom",
+      "weight": 20.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 9,
+      "category_id": 10,
+      "name": "Kitchen",
+      "weight": 25.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 10,
+      "category_id": 10,
+      "name": "Living Room",
+      "weight": 15.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 11,
+      "category_id": 10,
+      "name": "Master Bedroom",
+      "weight": 10.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 12,
+      "category_id": 10,
+      "name": "Additional Bedroom(s)",
+      "weight": 8.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 13,
+      "category_id": 10,
+      "name": "Closet/Laundry",
+      "weight": 8.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 14,
+      "category_id": 10,
+      "name": "Garage",
+      "weight": 7.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 15,
+      "category_id": 10,
+      "name": "Outside",
+      "weight": 7.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 16,
+      "category_id": 11,
+      "name": "Hospitals",
+      "weight": 21.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 17,
+      "category_id": 11,
+      "name": "Restaurants",
+      "weight": 17.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 18,
+      "category_id": 11,
+      "name": "Grocery Stores",
+      "weight": 20.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 19,
+      "category_id": 11,
+      "name": "Specialty Care (ENT, Dental, etc)",
+      "weight": 10.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 20,
+      "category_id": 11,
+      "name": "Convenience Stores",
+      "weight": 17.0,
+      "enabled": 1,
+      "metric": null
+    },
+    {
+      "id": 21,
+      "category_id": 11,
+      "name": "Events to Do",
+      "weight": 15.0,
+      "enabled": 1,
+      "metric": null
+    }
+  ],
+  "property_scores": [
+    {
+      "id": 38,
+      "property_id": 26,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 39,
+      "property_id": 26,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 40,
+      "property_id": 26,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 41,
+      "property_id": 26,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 42,
+      "property_id": 26,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 43,
+      "property_id": 26,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 44,
+      "property_id": 27,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 45,
+      "property_id": 27,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 46,
+      "property_id": 27,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 47,
+      "property_id": 27,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 48,
+      "property_id": 27,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 49,
+      "property_id": 27,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 50,
+      "property_id": 29,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 51,
+      "property_id": 29,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 52,
+      "property_id": 29,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 53,
+      "property_id": 29,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 54,
+      "property_id": 29,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 55,
+      "property_id": 29,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 56,
+      "property_id": 30,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 57,
+      "property_id": 30,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 58,
+      "property_id": 30,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 59,
+      "property_id": 30,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 60,
+      "property_id": 30,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 61,
+      "property_id": 30,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 62,
+      "property_id": 31,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 63,
+      "property_id": 31,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 64,
+      "property_id": 31,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 65,
+      "property_id": 31,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 66,
+      "property_id": 31,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 67,
+      "property_id": 31,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 88.0,
+      "rachel_score": 88.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 68,
+      "property_id": 32,
+      "category_id": 1,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 69,
+      "property_id": 32,
+      "category_id": 9,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 70,
+      "property_id": 32,
+      "category_id": 10,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 71,
+      "property_id": 32,
+      "category_id": 11,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 72,
+      "property_id": 32,
+      "category_id": 12,
+      "score": null,
+      "mark_score": 90.0,
+      "rachel_score": 90.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    },
+    {
+      "id": 73,
+      "property_id": 32,
+      "category_id": 13,
+      "score": null,
+      "mark_score": 93.0,
+      "rachel_score": 93.0,
+      "override_score": null,
+      "override_reason": null,
+      "notes": null
+    }
+  ],
+  "subcriteria_scores": [
+    {
+      "id": 16,
+      "property_id": 26,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 17,
+      "property_id": 26,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 18,
+      "property_id": 26,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 83.0
+    },
+    {
+      "id": 19,
+      "property_id": 26,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 81.0,
+      "rachel_score": 72.0
+    },
+    {
+      "id": 20,
+      "property_id": 26,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 82.0
+    },
+    {
+      "id": 21,
+      "property_id": 26,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 84.0,
+      "rachel_score": 84.0
+    },
+    {
+      "id": 22,
+      "property_id": 26,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 23,
+      "property_id": 26,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 24,
+      "property_id": 26,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 25,
+      "property_id": 26,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 26,
+      "property_id": 26,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 27,
+      "property_id": 26,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 28,
+      "property_id": 26,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 29,
+      "property_id": 26,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 30,
+      "property_id": 26,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 31,
+      "property_id": 26,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 90.0,
+      "rachel_score": 90.0
+    },
+    {
+      "id": 32,
+      "property_id": 27,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 33,
+      "property_id": 27,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 34,
+      "property_id": 27,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 64.0,
+      "rachel_score": 68.0
+    },
+    {
+      "id": 35,
+      "property_id": 27,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 81.0,
+      "rachel_score": 90.0
+    },
+    {
+      "id": 36,
+      "property_id": 27,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 72.0,
+      "rachel_score": 72.0
+    },
+    {
+      "id": 37,
+      "property_id": 27,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 71.0,
+      "rachel_score": 71.0
+    },
+    {
+      "id": 38,
+      "property_id": 27,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 72.0,
+      "rachel_score": 72.0
+    },
+    {
+      "id": 39,
+      "property_id": 27,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 70.0
+    },
+    {
+      "id": 40,
+      "property_id": 27,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 41,
+      "property_id": 27,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 92.0,
+      "rachel_score": 93.0
+    },
+    {
+      "id": 42,
+      "property_id": 27,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 43,
+      "property_id": 27,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 44,
+      "property_id": 27,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 95.0,
+      "rachel_score": 95.0
+    },
+    {
+      "id": 45,
+      "property_id": 27,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 46,
+      "property_id": 27,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 47,
+      "property_id": 27,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 48,
+      "property_id": 29,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 49,
+      "property_id": 29,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 50,
+      "property_id": 29,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 70.0,
+      "rachel_score": 65.0
+    },
+    {
+      "id": 51,
+      "property_id": 29,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 72.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 52,
+      "property_id": 29,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 73.0
+    },
+    {
+      "id": 53,
+      "property_id": 29,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 54,
+      "property_id": 29,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 55,
+      "property_id": 29,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 56,
+      "property_id": 29,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 57,
+      "property_id": 29,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 89.0,
+      "rachel_score": 89.0
+    },
+    {
+      "id": 58,
+      "property_id": 29,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 59,
+      "property_id": 29,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 60,
+      "property_id": 29,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 61,
+      "property_id": 29,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 62,
+      "property_id": 29,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 63,
+      "property_id": 29,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 60.0,
+      "rachel_score": 60.0
+    },
+    {
+      "id": 64,
+      "property_id": 30,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 65,
+      "property_id": 30,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 66,
+      "property_id": 30,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 79.0,
+      "rachel_score": 79.0
+    },
+    {
+      "id": 67,
+      "property_id": 30,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 77.0,
+      "rachel_score": 72.0
+    },
+    {
+      "id": 68,
+      "property_id": 30,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 84.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 69,
+      "property_id": 30,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 78.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 70,
+      "property_id": 30,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 84.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 71,
+      "property_id": 30,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 72,
+      "property_id": 30,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 73,
+      "property_id": 30,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 90.0,
+      "rachel_score": 90.0
+    },
+    {
+      "id": 74,
+      "property_id": 30,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 75,
+      "property_id": 30,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 76,
+      "property_id": 30,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 75.0,
+      "rachel_score": 75.0
+    },
+    {
+      "id": 77,
+      "property_id": 30,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 78,
+      "property_id": 30,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 79,
+      "property_id": 30,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 80,
+      "property_id": 31,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 81,
+      "property_id": 31,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 82,
+      "property_id": 31,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 95.0,
+      "rachel_score": 95.0
+    },
+    {
+      "id": 83,
+      "property_id": 31,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 84,
+      "property_id": 31,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 94.0,
+      "rachel_score": 94.0
+    },
+    {
+      "id": 85,
+      "property_id": 31,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 78.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 86,
+      "property_id": 31,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 78.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 87,
+      "property_id": 31,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 88,
+      "property_id": 31,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 89,
+      "property_id": 31,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 73.0,
+      "rachel_score": 73.0
+    },
+    {
+      "id": 90,
+      "property_id": 31,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 91,
+      "property_id": 31,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 92,
+      "property_id": 31,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 90.0,
+      "rachel_score": 90.0
+    },
+    {
+      "id": 93,
+      "property_id": 31,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 94,
+      "property_id": 31,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 95,
+      "property_id": 31,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 96,
+      "property_id": 32,
+      "subcriterion_id": 6,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 97,
+      "property_id": 32,
+      "subcriterion_id": 7,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 98,
+      "property_id": 32,
+      "subcriterion_id": 8,
+      "score": null,
+      "mark_score": 87.0,
+      "rachel_score": 92.0
+    },
+    {
+      "id": 99,
+      "property_id": 32,
+      "subcriterion_id": 9,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 100,
+      "property_id": 32,
+      "subcriterion_id": 10,
+      "score": null,
+      "mark_score": 87.0,
+      "rachel_score": 87.0
+    },
+    {
+      "id": 101,
+      "property_id": 32,
+      "subcriterion_id": 11,
+      "score": null,
+      "mark_score": 65.0,
+      "rachel_score": 65.0
+    },
+    {
+      "id": 102,
+      "property_id": 32,
+      "subcriterion_id": 12,
+      "score": null,
+      "mark_score": 80.0,
+      "rachel_score": 80.0
+    },
+    {
+      "id": 103,
+      "property_id": 32,
+      "subcriterion_id": 13,
+      "score": null,
+      "mark_score": 74.0,
+      "rachel_score": 70.0
+    },
+    {
+      "id": 104,
+      "property_id": 32,
+      "subcriterion_id": 14,
+      "score": null,
+      "mark_score": null,
+      "rachel_score": null
+    },
+    {
+      "id": 105,
+      "property_id": 32,
+      "subcriterion_id": 15,
+      "score": null,
+      "mark_score": 70.0,
+      "rachel_score": 70.0
+    },
+    {
+      "id": 106,
+      "property_id": 32,
+      "subcriterion_id": 16,
+      "score": null,
+      "mark_score": 74.0,
+      "rachel_score": 74.0
+    },
+    {
+      "id": 107,
+      "property_id": 32,
+      "subcriterion_id": 17,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 108,
+      "property_id": 32,
+      "subcriterion_id": 18,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 109,
+      "property_id": 32,
+      "subcriterion_id": 19,
+      "score": null,
+      "mark_score": 100.0,
+      "rachel_score": 100.0
+    },
+    {
+      "id": 110,
+      "property_id": 32,
+      "subcriterion_id": 20,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 85.0
+    },
+    {
+      "id": 111,
+      "property_id": 32,
+      "subcriterion_id": 21,
+      "score": null,
+      "mark_score": 85.0,
+      "rachel_score": 85.0
+    }
+  ],
+  "model_presets": [
+    {
+      "id": 1,
+      "name": "Balanced",
+      "description": null,
+      "created_at": "2026-08-08 00:40:37"
+    },
+    {
+      "id": 2,
+      "name": "Financial",
+      "description": null,
+      "created_at": "2026-08-08 00:40:37"
+    }
+  ],
+  "model_preset_weights": [
+    {
+      "preset_id": 1,
+      "category_id": 1,
+      "weight": 20.0
+    },
+    {
+      "preset_id": 2,
+      "category_id": 1,
+      "weight": 15.0
+    }
+  ],
+  "deal_breakers": [
+    {
+      "id": 1,
+      "label": "Monthly cost over budget",
+      "field": "monthly_cost",
+      "comparator": "max",
+      "value": 2000.0,
+      "enabled": 1
+    },
+    {
+      "id": 2,
+      "label": "Fewer than 2 bedrooms",
+      "field": "bedrooms",
+      "comparator": "min",
+      "value": 2.0,
+      "enabled": 1
+    },
+    {
+      "id": 4,
+      "label": "Overall score below 60",
+      "field": "overall",
+      "comparator": "min",
+      "value": 60.0,
+      "enabled": 1
+    }
+  ],
+  "commute_cache": [
+    {
+      "property_id": 26,
+      "destination": "mark",
+      "minutes": 39.961666666666666,
+      "miles": 29.104405273204485,
+      "origin": "address",
+      "origin_label": "2018 Bailey Circle",
+      "fetched_at": "2026-08-09 16:43:18"
+    },
+    {
+      "property_id": 26,
+      "destination": "rachel",
+      "minutes": 21.178333333333335,
+      "miles": 11.83277161377555,
+      "origin": "address",
+      "origin_label": "2018 Bailey Circle",
+      "fetched_at": "2026-08-09 16:43:18"
+    },
+    {
+      "property_id": 27,
+      "destination": "mark",
+      "minutes": 36.9,
+      "miles": 27.880179750258492,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:10:14"
+    },
+    {
+      "property_id": 27,
+      "destination": "rachel",
+      "minutes": 21.901666666666664,
+      "miles": 13.122241111906467,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:10:14"
+    },
+    {
+      "property_id": 29,
+      "destination": "mark",
+      "minutes": 36.9,
+      "miles": 27.880179750258492,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:31:39"
+    },
+    {
+      "property_id": 29,
+      "destination": "rachel",
+      "minutes": 21.901666666666664,
+      "miles": 13.122241111906467,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:31:39"
+    },
+    {
+      "property_id": 30,
+      "destination": "mark",
+      "minutes": 36.9,
+      "miles": 27.880179750258492,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:47:52"
+    },
+    {
+      "property_id": 30,
+      "destination": "rachel",
+      "minutes": 21.901666666666664,
+      "miles": 13.122241111906467,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:47:52"
+    },
+    {
+      "property_id": 31,
+      "destination": "mark",
+      "minutes": 36.9,
+      "miles": 27.880179750258492,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:58:45"
+    },
+    {
+      "property_id": 31,
+      "destination": "rachel",
+      "minutes": 21.901666666666664,
+      "miles": 13.122241111906467,
+      "origin": "town",
+      "origin_label": "the centre of Greenfield",
+      "fetched_at": "2026-08-09 17:58:45"
+    },
+    {
+      "property_id": 32,
+      "destination": "mark",
+      "minutes": 23.908333333333335,
+      "miles": 13.116835182534,
+      "origin": "town",
+      "origin_label": "the centre of McCordsville",
+      "fetched_at": "2026-08-09 18:25:27"
+    },
+    {
+      "property_id": 32,
+      "destination": "rachel",
+      "minutes": 39.77833333333333,
+      "miles": 29.466726815398072,
+      "origin": "town",
+      "origin_label": "the centre of McCordsville",
+      "fetched_at": "2026-08-09 18:25:28"
+    }
+  ],
+  "settings": [
+    {
+      "key": "grade_scale",
+      "value": "[{\"grade\":\"A+\",\"min\":97},{\"grade\":\"A\",\"min\":93},{\"grade\":\"A-\",\"min\":90},{\"grade\":\"B+\",\"min\":87},{\"grade\":\"B\",\"min\":83},{\"grade\":\"B-\",\"min\":80},{\"grade\":\"C+\",\"min\":77},{\"grade\":\"C\",\"min\":73},{\"grade\":\"C-\",\"min\":70},{\"grade\":\"D+\",\"min\":67},{\"grade\":\"D\",\"min\":63},{\"grade\":\"D-\",\"min\":60},{\"grade\":\"F\",\"min\":0}]"
+    },
+    {
+      "key": "rater_combine",
+      "value": "\"average\""
+    },
+    {
+      "key": "disagreement_threshold",
+      "value": "5"
+    }
+  ],
+  "photos": {
+    "26": [
+      "1786293798554-vu9mg2.webp"
+    ],
+    "27": [
+      "1786295414965-r78miu.webp"
+    ],
+    "28": [
+      "1786296280430-qsm6hx.webp"
+    ],
+    "29": [
+      "1786296700991-3zofhv.webp"
+    ],
+    "30": [
+      "1786297672323-j4c06o.webp"
+    ],
+    "31": [
+      "1786298325907-c6zo8u.webp"
+    ],
+    "32": [
+      "1786299929193-newsst.webp"
+    ]
+  }
+}

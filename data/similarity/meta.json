@@ -1,0 +1,204 @@
+{
+  "generated": "2026-06-20",
+  "n_towns": 208,
+  "k": 8,
+  "silhouette": 0.15234362740155655,
+  "kmeans_agreement": 0.604235519030582,
+  "search_radius_miles": 15.0,
+  "pop_threshold": 2000,
+  "features": [
+    {
+      "key": "population",
+      "label": "Population",
+      "family": "Size",
+      "invert": false
+    },
+    {
+      "key": "dist_hospital",
+      "label": "Distance to hospital (mi)",
+      "family": "Amenity access",
+      "invert": true
+    },
+    {
+      "key": "dist_grocery",
+      "label": "Distance to major grocery (mi)",
+      "family": "Amenity access",
+      "invert": true
+    },
+    {
+      "key": "dist_retail",
+      "label": "Distance to major retail (mi)",
+      "family": "Amenity access",
+      "invert": true
+    },
+    {
+      "key": "count_amenities",
+      "label": "Amenities within R miles",
+      "family": "Amenity abundance",
+      "invert": false
+    },
+    {
+      "key": "dist_fastfood",
+      "label": "Distance to fast food (mi)",
+      "family": "Food",
+      "invert": true
+    },
+    {
+      "key": "count_fastfood",
+      "label": "Fast food within R miles",
+      "family": "Food",
+      "invert": false
+    },
+    {
+      "key": "violent_crime_rate",
+      "label": "Violent crime rate (per 100k)",
+      "family": "Safety",
+      "invert": true
+    },
+    {
+      "key": "median_income",
+      "label": "Median household income ($)",
+      "family": "Affordability",
+      "invert": false
+    },
+    {
+      "key": "affordability_ratio",
+      "label": "Income-to-home-value ratio",
+      "family": "Affordability",
+      "invert": false
+    },
+    {
+      "key": "school_index",
+      "label": "District graduation rate (0-100)",
+      "family": "Schools",
+      "invert": false
+    },
+    {
+      "key": "social_assoc_rate",
+      "label": "Social associations per 10k",
+      "family": "Community",
+      "invert": false
+    },
+    {
+      "key": "count_community",
+      "label": "Community POIs within R miles",
+      "family": "Community",
+      "invert": false
+    },
+    {
+      "key": "band_salary",
+      "label": "Band-related median salary ($)",
+      "family": "Jobs: Band",
+      "invert": false
+    },
+    {
+      "key": "bi_salary",
+      "label": "BI median salary ($)",
+      "family": "Jobs: BI",
+      "invert": false
+    },
+    {
+      "key": "data_salary",
+      "label": "Data analytics median salary ($)",
+      "family": "Jobs: Data",
+      "invert": false
+    }
+  ],
+  "families": [
+    "Size",
+    "Amenity access",
+    "Amenity abundance",
+    "Food",
+    "Safety",
+    "Affordability",
+    "Schools",
+    "Community",
+    "Jobs: Band",
+    "Jobs: BI",
+    "Jobs: Data"
+  ],
+  "family_features": {
+    "Size": [
+      "population"
+    ],
+    "Amenity access": [
+      "dist_hospital",
+      "dist_grocery",
+      "dist_retail"
+    ],
+    "Amenity abundance": [
+      "count_amenities"
+    ],
+    "Food": [
+      "dist_fastfood",
+      "count_fastfood"
+    ],
+    "Safety": [
+      "violent_crime_rate"
+    ],
+    "Affordability": [
+      "median_income",
+      "affordability_ratio"
+    ],
+    "Schools": [
+      "school_index"
+    ],
+    "Community": [
+      "social_assoc_rate",
+      "count_community"
+    ],
+    "Jobs: Band": [
+      "band_salary"
+    ],
+    "Jobs: BI": [
+      "bi_salary"
+    ],
+    "Jobs: Data": [
+      "data_salary"
+    ]
+  },
+  "family_scales": {
+    "Size": 7.732454900620331,
+    "Amenity access": 20.10706278225384,
+    "Amenity abundance": 8.610573193805658,
+    "Food": 12.644893188537292,
+    "Safety": 5.934708770405961,
+    "Affordability": 13.51952232518576,
+    "Schools": 8.360280115286765,
+    "Community": 13.575774354006711,
+    "Jobs: Band": 9.524893038944194,
+    "Jobs: BI": 9.306313509560518,
+    "Jobs: Data": 10.244607266290874
+  },
+  "default_feature_weights": {
+    "population": 70.0,
+    "dist_hospital": 77.5,
+    "dist_grocery": 95.0,
+    "dist_retail": 75.0,
+    "count_amenities": 72.5,
+    "dist_fastfood": 60.0,
+    "count_fastfood": 67.5,
+    "violent_crime_rate": 85.0,
+    "median_income": 78.0,
+    "affordability_ratio": 78.0,
+    "school_index": 93.5,
+    "social_assoc_rate": 56.0,
+    "count_community": 81.0,
+    "band_salary": 85.0,
+    "bi_salary": 95.0,
+    "data_salary": 99.0
+  },
+  "default_family_weights": {
+    "Size": 70.0,
+    "Amenity access": 82.5,
+    "Amenity abundance": 72.5,
+    "Food": 63.75,
+    "Safety": 85.0,
+    "Affordability": 78.0,
+    "Schools": 93.5,
+    "Community": 68.5,
+    "Jobs: Band": 85.0,
+    "Jobs: BI": 95.0,
+    "Jobs: Data": 99.0
+  }
+}
