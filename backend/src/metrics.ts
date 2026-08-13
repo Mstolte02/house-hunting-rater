@@ -100,10 +100,17 @@ function cachedLegs(propertyId: number): CacheRow[] {
     .all(propertyId) as CacheRow[];
 }
 
+/** Ignore legacy town-centre routes when this listing has a street address. */
+function usableCachedLegs(property: Property): CacheRow[] {
+  return cachedLegs(property.id).filter(
+    (row) => !property.address || row.origin === "address"
+  );
+}
+
 /** Scored drive times for a property, straight from the cache. Never hits the network. */
 export function commutesFor(property: Property): CommuteResult[] {
   const { destinations, anchors } = commuteSettings();
-  const rows = new Map(cachedLegs(property.id).map((r) => [r.destination, r]));
+  const rows = new Map(usableCachedLegs(property).map((r) => [r.destination, r]));
   const out: CommuteResult[] = [];
   for (const d of destinations) {
     const row = rows.get(d.key);
@@ -124,7 +131,7 @@ export function commutesFor(property: Property): CommuteResult[] {
 
 /** Destinations with no cached route yet — what a Recalculate would go and fetch. */
 export function missingCommutes(property: Property): string[] {
-  const cached = new Set(cachedLegs(property.id).map((r) => r.destination));
+  const cached = new Set(usableCachedLegs(property).map((r) => r.destination));
   return commuteSettings()
     .destinations.filter((d) => !cached.has(d.key))
     .map((d) => d.label);
@@ -160,10 +167,14 @@ export async function refreshCommutes(
   let originLabel = origin === "address" ? "this property's coordinates" : null;
   let geocoded: { lat: number; lon: number } | null = null;
 
-  if (lat == null || lon == null) {
-    const parts = [property.address, property.city, property.state, property.zip]
-      .filter(Boolean)
-      .join(", ");
+  if ((lat == null || lon == null) && property.address) {
+    const lower = property.address.toLowerCase();
+    const parts = [
+      property.address,
+      property.city && !lower.includes(property.city.toLowerCase()) ? property.city : null,
+      property.state && !lower.includes(property.state.toLowerCase()) ? property.state : null,
+      property.zip && !lower.includes(property.zip.toLowerCase()) ? property.zip : null,
+    ].filter(Boolean).join(", ");
     if (parts) {
       const hit = await geocode(parts);
       if (hit) {
@@ -177,18 +188,8 @@ export async function refreshCommutes(
   }
 
   if (lat == null || lon == null) {
-    // Fall back to the centre of the matched town so a property with only a city still
-    // gets a real routed time, just a less precise one.
-    const town = getAdapter().matchTown(property.similarity_town ?? property.city);
-    if (town) {
-      lat = town.lat;
-      lon = town.lon;
-      origin = "town";
-      originLabel = `the centre of ${town.name}`;
-    }
-  }
-
-  if (lat == null || lon == null) {
+    // A city-centre route can look precise while being materially wrong for a listing.
+    // Leave commute unscored until the street address can be geocoded instead.
     return { routed: 0, failed: destinations.map((d) => d.label), origin: null, origin_label: null, geocoded: null };
   }
 
@@ -201,7 +202,11 @@ export async function refreshCommutes(
        fetched_at = excluded.fetched_at`
   );
 
-  const cached = new Set(cachedLegs(property.id).map((r) => r.destination));
+  const cached = new Set(
+    cachedLegs(property.id)
+      .filter((r) => !property.address || r.origin === "address")
+      .map((r) => r.destination)
+  );
   let routed = 0;
   for (const d of destinations) {
     if (!force && cached.has(d.key)) continue;

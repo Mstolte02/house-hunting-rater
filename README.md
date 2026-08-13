@@ -150,8 +150,9 @@ wrong one. Routes are also sanity-checked against straight-line distance, becaus
 coordinate the router can't place comes back as a valid-looking zero-length route, and
 a 0-minute commute would otherwise score 100.
 
-Without a street address a property falls back to the centre of its matched town, so
-every house there shares a time; the property page says which was used.
+A street address is required for commute scoring. The app never substitutes a city- or
+town-centre route; if the exact address cannot be located, commute remains unscored and
+the property page asks you to check the address or recalculate.
 
 Destinations live in Tuning → Commute with hand-entered coordinates. Add more for
 family, church, or anywhere else you drive weekly — each one becomes a selectable

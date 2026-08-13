@@ -92,7 +92,11 @@ function commuteSettings() {
 }
 function commutesFor(p: Property): CommuteResult[] {
   const { destinations, anchors } = commuteSettings();
-  const rows = new Map(state.commute_cache.filter((r) => r.property_id === p.id).map((r) => [r.destination, r]));
+  // Never present a town-centre route as this property's commute when a street
+  // address is available. Older snapshots may contain those fallback rows.
+  const rows = new Map(state.commute_cache
+    .filter((r) => r.property_id === p.id && (!p.address || r.origin === "address"))
+    .map((r) => [r.destination, r]));
   return destinations.flatMap((d) => {
     const r: any = rows.get(d.key); if (!r) return [];
     return [scoreLeg({ destination: d.key, label: d.label, minutes: r.minutes, miles: r.miles, origin: r.origin, origin_label: r.origin_label ?? "", fetched_at: r.fetched_at }, anchors)];
@@ -134,6 +138,16 @@ function detail(id: number | string): PropertyDetail {
 const WRITABLE = ["name","address","city","state","zip","url","property_type","status","monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","parking","latitude","longitude","similarity_town","notes","pros","cons","visit_notes"];
 const NUMERIC = new Set(["monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","latitude","longitude"]);
 function picked(body: Record<string, unknown>) { const out: any = {}; for (const k of WRITABLE) if (k in body) { const v = body[k]; out[k] = v === "" || v == null ? null : NUMERIC.has(k) ? (Number.isFinite(Number(v)) ? Number(v) : null) : v; } return out; }
+function exactAddress(p: Property) {
+  const address = p.address?.trim() ?? "";
+  const lower = address.toLowerCase();
+  return [
+    address,
+    p.city && !lower.includes(p.city.toLowerCase()) ? p.city : null,
+    p.state && !lower.includes(p.state.toLowerCase()) ? p.state : null,
+    p.zip && !lower.includes(p.zip.toLowerCase()) ? p.zip : null,
+  ].filter(Boolean).join(", ");
+}
 
 async function fileData(file: File): Promise<string> { return await new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(String(r.result)); r.onerror = () => reject(r.error); r.readAsDataURL(file); }); }
 function download(name: string, type: string, body: string) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
@@ -182,6 +196,30 @@ export const api = {
   exportModel: () => download(`house-hunt-model-${new Date().toISOString().slice(0,10)}.json`,"application/json",JSON.stringify({ exported:new Date().toISOString(),categories:state.categories,subcriteria:state.subcriteria,deal_breakers:state.deal_breakers,presets:state.model_presets,preset_weights:state.model_preset_weights,grade_scale:setting("grade_scale",DEFAULT_GRADE_SCALE),rater_combine:setting("rater_combine","average"),disagreement_threshold:setting("disagreement_threshold",15),similarity:similaritySettings() },null,2)),
 };
 
-async function geocode(query: string) { try { const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`,{headers:{Accept:"application/json"}}); const d=await r.json(); return d?.[0] ? {lat:Number(d[0].lat),lon:Number(d[0].lon)} : null; } catch { return null; } }
+async function geocode(query: string) {
+  try {
+    const r = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`,
+      { headers: { Accept: "application/json" } }
+    );
+    const d = await r.json();
+    if (d?.[0]) return { lat: Number(d[0].lat), lon: Number(d[0].lon) };
+  } catch { /* try the second provider */ }
+
+  // Apartment communities and newer streets are sometimes missing from OpenStreetMap.
+  // ArcGIS's public locator supplies point-address matches for those listings.
+  try {
+    const r = await fetch(
+      `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${encodeURIComponent(query)}&f=json&outFields=Match_addr,Addr_type&maxLocations=1`
+    );
+    const d = await r.json();
+    const hit = d?.candidates?.[0];
+    const exactTypes = new Set(["PointAddress", "StreetAddress", "Subaddress"]);
+    if (hit?.score >= 90 && exactTypes.has(hit.attributes?.Addr_type)) {
+      return { lat: Number(hit.location.y), lon: Number(hit.location.x) };
+    }
+  } catch { /* leave commute unscored */ }
+  return null;
+}
 async function route(from:{lat:number;lon:number},to:{lat:number;lon:number}) { try { const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${from.lon},${from.lat};${to.lon},${to.lat}?overview=false`); const d=await r.json(); const x=d?.routes?.[0]; if(!x) return null; const miles=x.distance/1609.344, minutes=x.duration/60, crow=haversineMiles(from.lat,from.lon,to.lat,to.lon); return crow>0.5&&(miles<crow*.8||minutes<=0)?null:{miles,minutes}; } catch{return null;} }
-async function refreshCommute(id:number, force=false) { const p=state.properties.find((x)=>x.id===id); if(!p) throw new Error("Property not found"); let lat=p.latitude,lon=p.longitude,origin:"address"|"town"|null=lat!=null&&lon!=null?"address":null,origin_label:string|null=origin?"this property's coordinates":null; if(lat==null||lon==null){const q=[p.address,p.city,p.state,p.zip].filter(Boolean).join(", "); const g=q?await geocode(q):null; if(g){lat=g.lat;lon=g.lon;p.latitude=lat;p.longitude=lon;origin="address";origin_label=p.address??q;}} if(lat==null||lon==null){const t=adapter().matchTown(p.similarity_town??p.city);if(t){lat=t.lat;lon=t.lon;origin="town";origin_label=`the centre of ${t.name}`;}} const failed:string[]=[];let routed=0; for(const d of commuteSettings().destinations){if(!force&&state.commute_cache.some((r)=>r.property_id===id&&r.destination===d.key))continue;if(lat==null||lon==null){failed.push(d.label);continue;}const x=await route({lat,lon},{lat:d.lat,lon:d.lon});if(!x){failed.push(d.label);continue;}state.commute_cache=state.commute_cache.filter((r)=>!(r.property_id===id&&r.destination===d.key));state.commute_cache.push({property_id:id,destination:d.key,...x,origin,origin_label,fetched_at:new Date().toISOString()});routed++;} persist();return{routed,failed,origin,origin_label,result:detail(id)}; }
+async function refreshCommute(id:number, force=false) { const p=state.properties.find((x)=>x.id===id); if(!p) throw new Error("Property not found"); let lat=p.latitude,lon=p.longitude,origin:"address"|"town"|null=lat!=null&&lon!=null?"address":null,origin_label:string|null=origin?exactAddress(p):null; if((lat==null||lon==null)&&p.address){const q=exactAddress(p); const g=await geocode(q); if(g){lat=g.lat;lon=g.lon;p.latitude=lat;p.longitude=lon;origin="address";origin_label=q;}} const failed:string[]=[];let routed=0; for(const d of commuteSettings().destinations){const hasExact=state.commute_cache.some((r)=>r.property_id===id&&r.destination===d.key&&(!p.address||r.origin==="address"));if(!force&&hasExact)continue;if(lat==null||lon==null){failed.push(d.label);continue;}const x=await route({lat,lon},{lat:d.lat,lon:d.lon});if(!x){failed.push(d.label);continue;}state.commute_cache=state.commute_cache.filter((r)=>!(r.property_id===id&&r.destination===d.key));state.commute_cache.push({property_id:id,destination:d.key,...x,origin:"address",origin_label,fetched_at:new Date().toISOString()});routed++;} persist();return{routed,failed,origin,origin_label,result:detail(id)}; }

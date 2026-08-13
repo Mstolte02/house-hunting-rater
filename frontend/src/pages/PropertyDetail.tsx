@@ -598,7 +598,6 @@ function CommuteCard({
 }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
-  const fromTown = commutes.some((c) => c.origin === "town");
 
   async function recalc() {
     setBusy(true);
@@ -608,7 +607,7 @@ function CommuteCard({
       onRefreshed(r.result);
       setNote(
         r.failed.length
-          ? `Couldn't reach the routing service for: ${r.failed.join(", ")}`
+          ? `Couldn't calculate an exact-address route for: ${r.failed.join(", ")}. Check the street address or try again.`
           : `Updated ${r.routed} route${r.routed === 1 ? "" : "s"}.`
       );
     } catch (e: any) {
@@ -663,8 +662,9 @@ function CommuteCard({
       {note && <div className="tiny muted" style={{ marginTop: 10 }}>{note}</div>}
 
       <div className="tiny faint" style={{ marginTop: 10 }}>
-        Real driving routes from {commutes[0]?.origin_label ?? "this property"}.
-        {fromTown && " Add the street address for a per-house time."}
+        {commutes.length
+          ? `Real driving routes from ${commutes[0].origin_label}.`
+          : "Commute stays unscored until this property's exact street address can be located."}
       </div>
     </section>
   );

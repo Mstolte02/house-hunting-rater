@@ -55,14 +55,40 @@ export async function geocode(query: string): Promise<GeocodeResult | null> {
     await politeDelay();
     const url = `${NOMINATIM}?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=us`;
     const data = await fetchJson(url);
-    if (!Array.isArray(data) || data.length === 0) return null;
-    const lat = Number(data[0].lat);
-    const lon = Number(data[0].lon);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-    return { lat, lon, display_name: String(data[0].display_name ?? "") };
+    if (Array.isArray(data) && data.length > 0) {
+      const lat = Number(data[0].lat);
+      const lon = Number(data[0].lon);
+      if (Number.isFinite(lat) && Number.isFinite(lon)) {
+        return { lat, lon, display_name: String(data[0].display_name ?? "") };
+      }
+    }
   } catch {
-    return null;
+    // Continue to the second provider below.
   }
+
+  // Apartment communities and newer streets can be absent from OpenStreetMap. Only
+  // accept ArcGIS results that resolve to an exact address type with high confidence.
+  try {
+    const url =
+      "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/" +
+      `findAddressCandidates?SingleLine=${encodeURIComponent(query)}` +
+      "&f=json&outFields=Match_addr,Addr_type&maxLocations=1";
+    const data = await fetchJson(url);
+    const hit = data?.candidates?.[0];
+    const exactTypes = new Set(["PointAddress", "StreetAddress", "Subaddress"]);
+    const lat = Number(hit?.location?.y);
+    const lon = Number(hit?.location?.x);
+    if (
+      Number(hit?.score) >= 90 &&
+      exactTypes.has(hit?.attributes?.Addr_type) &&
+      Number.isFinite(lat) && Number.isFinite(lon)
+    ) {
+      return { lat, lon, display_name: String(hit.address ?? query) };
+    }
+  } catch {
+    // Leave unscored rather than accepting a lower-quality location.
+  }
+  return null;
 }
 
 export interface RouteResult {

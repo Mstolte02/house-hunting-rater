@@ -56,6 +56,7 @@ export default function PropertyForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.name.trim()) return setError("Give the property a name.");
+    if (!form.address.trim()) return setError("Enter the exact street address so commute scoring is accurate.");
     setSaving(true);
     setError(null);
     try {
@@ -142,7 +143,15 @@ export default function PropertyForm() {
           <div className="section-title">Location</div>
           <div className="field">
             <label>Address</label>
-            <input value={form.address} onChange={set("address")} />
+            <input
+              value={form.address}
+              onChange={set("address")}
+              placeholder="123 Main St"
+              required
+            />
+            <div className="tiny muted" style={{ marginTop: 7 }}>
+              Required for exact-address commute routing; city-center estimates are never used.
+            </div>
           </div>
           <div className="row">
             <div className="field">
