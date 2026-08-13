@@ -12,6 +12,7 @@ import type { SimMeta, SimTown } from "@shared/similarity/types";
 import seed from "../data/seed.json";
 import townsJson from "../../../data/similarity/towns.json";
 import metaJson from "../../../data/similarity/meta.json";
+import { loadSharedState, requireEditor, saveSharedState } from "./shared";
 
 export type CategoryWithSubs = Category & { subcriteria: Subcriterion[] };
 export interface Destination { key: string; label: string; address: string; lat: number; lon: number }
@@ -41,22 +42,34 @@ const DEFAULT_DESTINATIONS: Destination[] = [
   { key: "rachel", label: "Rachel's work", address: "Knightstown High School, 8149 W US-40, Knightstown, IN 46148", lat: 39.7925966, lon: -85.5421078 },
 ];
 
-function freshState(): State {
-  const s = structuredClone(seed) as unknown as State;
+function normalizeState(input: unknown): State {
+  const s = structuredClone(input) as State;
   s.categories = s.categories.map((c: any) => ({ ...c, enabled: !!c.enabled, single_score: !!c.single_score, metric: c.metric ?? null }));
   s.subcriteria = s.subcriteria.map((x: any) => ({ ...x, enabled: !!x.enabled, metric: x.metric ?? null }));
   s.deal_breakers = s.deal_breakers.map((x: any) => ({ ...x, enabled: !!x.enabled }));
   return s;
 }
+function freshState(): State { return normalizeState(seed); }
 
 let state: State = (() => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : freshState();
+    return saved ? normalizeState(JSON.parse(saved)) : freshState();
   } catch { return freshState(); }
 })();
 
-function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let revision = 0;
+const remoteReady = loadSharedState<State>().then((snapshot) => {
+  if (!snapshot) return;
+  state = normalizeState(snapshot.data);
+  revision = snapshot.revision;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+});
+
+async function persist() {
+  revision = await saveSharedState(state, revision);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 function setting<T>(key: string, fallback: T): T {
   const row = state.settings.find((r) => r.key === key);
   if (!row) return fallback;
@@ -65,7 +78,6 @@ function setting<T>(key: string, fallback: T): T {
 function setSetting(key: string, value: unknown) {
   const row = state.settings.find((r) => r.key === key);
   if (row) row.value = JSON.stringify(value); else state.settings.push({ key, value: JSON.stringify(value) });
-  persist();
 }
 function nextId(rows: { id?: number }[]) { return Math.max(0, ...rows.map((r) => Number(r.id) || 0)) + 1; }
 
@@ -153,48 +165,68 @@ async function fileData(file: File): Promise<string> { return await new Promise(
 function download(name: string, type: string, body: string) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
 function csvCell(v: unknown) { if (v == null) return ""; const s = String(v); return /[\",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
 
-export const api = {
+const rawApi = {
   properties: async (sort = "overall") => results(sort).map((r) => ({ ...r, lead_photo: photoRows(r.property.id)[0] ? photoUrl(r.property.id, photoRows(r.property.id)[0]) : null })),
   property: async (id: number | string) => detail(id),
-  createProperty: async (body: Record<string, unknown>) => { const data: any = picked(body); if (!data.name) throw new Error("name is required"); const now = new Date().toISOString(); const p = { id: nextId(state.properties), property_type: "House", status: "Considering", state: "IN", ...Object.fromEntries(WRITABLE.map((k) => [k, null])), ...data, created_at: now, updated_at: now } as Property; state.properties.push(p); persist(); await refreshCommute(p.id); return detail(p.id); },
-  updateProperty: async (id: number | string, body: Record<string, unknown>) => { const p = state.properties.find((x) => x.id === Number(id)); if (!p) throw new Error("Property not found"); const data = picked(body); const moved = ["address","city","state","zip","latitude","longitude"].some((k) => k in data && (p as any)[k] !== data[k]); Object.assign(p, data, { updated_at: new Date().toISOString() }); if (moved) { state.commute_cache = state.commute_cache.filter((r) => r.property_id !== p.id); await refreshCommute(p.id); } persist(); return detail(p.id); },
-  deleteProperty: async (id: number | string) => { const n = Number(id); state.properties = state.properties.filter((p) => p.id !== n); state.property_scores = state.property_scores.filter((s) => s.property_id !== n); state.subcriteria_scores = state.subcriteria_scores.filter((s) => s.property_id !== n); state.commute_cache = state.commute_cache.filter((r) => r.property_id !== n); delete state.photos[String(n)]; persist(); },
-  saveScores: async (id: number | string, scores: any[]) => { const n = Number(id); for (const row of scores) { let hit = state.property_scores.find((s) => s.property_id === n && s.category_id === row.category_id); if (!hit) { hit = { id: nextId(state.property_scores), property_id: n, category_id: row.category_id, score: null, mark_score: null, rachel_score: null, override_score: null, override_reason: null, notes: null }; state.property_scores.push(hit); } Object.assign(hit, row, { property_id: n }); } persist(); return detail(n); },
-  saveSubScores: async (id: number | string, scores: any[]) => { const n = Number(id); for (const row of scores) { let hit = state.subcriteria_scores.find((s) => s.property_id === n && s.subcriterion_id === row.subcriterion_id); if (!hit) { hit = { id: nextId(state.subcriteria_scores), property_id: n, subcriterion_id: row.subcriterion_id, score: null, mark_score: null, rachel_score: null }; state.subcriteria_scores.push(hit); } Object.assign(hit, row, { property_id: n }); } persist(); return detail(n); },
+  createProperty: async (body: Record<string, unknown>) => { const data: any = picked(body); if (!data.name) throw new Error("name is required"); const now = new Date().toISOString(); const p = { id: nextId(state.properties), property_type: "House", status: "Considering", state: "IN", ...Object.fromEntries(WRITABLE.map((k) => [k, null])), ...data, created_at: now, updated_at: now } as Property; state.properties.push(p); await persist(); await refreshCommute(p.id); return detail(p.id); },
+  updateProperty: async (id: number | string, body: Record<string, unknown>) => { const p = state.properties.find((x) => x.id === Number(id)); if (!p) throw new Error("Property not found"); const data = picked(body); const moved = ["address","city","state","zip","latitude","longitude"].some((k) => k in data && (p as any)[k] !== data[k]); Object.assign(p, data, { updated_at: new Date().toISOString() }); if (moved) { state.commute_cache = state.commute_cache.filter((r) => r.property_id !== p.id); await refreshCommute(p.id); } await persist(); return detail(p.id); },
+  deleteProperty: async (id: number | string) => { const n = Number(id); state.properties = state.properties.filter((p) => p.id !== n); state.property_scores = state.property_scores.filter((s) => s.property_id !== n); state.subcriteria_scores = state.subcriteria_scores.filter((s) => s.property_id !== n); state.commute_cache = state.commute_cache.filter((r) => r.property_id !== n); delete state.photos[String(n)]; await persist(); },
+  saveScores: async (id: number | string, scores: any[]) => { const n = Number(id); for (const row of scores) { let hit = state.property_scores.find((s) => s.property_id === n && s.category_id === row.category_id); if (!hit) { hit = { id: nextId(state.property_scores), property_id: n, category_id: row.category_id, score: null, mark_score: null, rachel_score: null, override_score: null, override_reason: null, notes: null }; state.property_scores.push(hit); } Object.assign(hit, row, { property_id: n }); } await persist(); return detail(n); },
+  saveSubScores: async (id: number | string, scores: any[]) => { const n = Number(id); for (const row of scores) { let hit = state.subcriteria_scores.find((s) => s.property_id === n && s.subcriterion_id === row.subcriterion_id); if (!hit) { hit = { id: nextId(state.subcriteria_scores), property_id: n, subcriterion_id: row.subcriterion_id, score: null, mark_score: null, rachel_score: null }; state.subcriteria_scores.push(hit); } Object.assign(hit, row, { property_id: n }); } await persist(); return detail(n); },
   categories: async () => state.categories.slice().sort((a,b) => a.sort_order-b.sort_order).map((c) => ({ ...c, subcriteria: state.subcriteria.filter((s) => s.category_id === c.id) })),
-  createCategory: async (body: any) => { if (!body.name) throw new Error("name is required"); if (state.categories.some((c) => c.name === body.name)) throw new Error(`A category named "${body.name}" already exists.`); const metric = body.metric || null; const c: Category = { id: nextId(state.categories), name: body.name, description: body.description ?? null, weight: Number(body.weight) || 0, enabled: body.enabled !== false, scoring_method: metric ? "external" : "manual", metric, single_score: false, sort_order: Math.max(-1, ...state.categories.map((x) => x.sort_order)) + 1 }; state.categories.push(c); persist(); return { ...c, subcriteria: [] }; },
-  updateCategory: async (id: number, body: any) => { const c = state.categories.find((x) => x.id === id); if (!c) throw new Error("Category not found"); Object.assign(c, body); if ("metric" in body) c.scoring_method = body.metric ? "external" : "manual"; persist(); return { ...c, subcriteria: state.subcriteria.filter((s) => s.category_id === id) }; },
-  deleteCategory: async (id: number) => { state.categories = state.categories.filter((c) => c.id !== id); const subIds = new Set(state.subcriteria.filter((s) => s.category_id === id).map((s) => s.id)); state.subcriteria = state.subcriteria.filter((s) => s.category_id !== id); state.property_scores = state.property_scores.filter((s) => s.category_id !== id); state.subcriteria_scores = state.subcriteria_scores.filter((s) => !subIds.has(s.subcriterion_id)); persist(); },
-  saveWeights: async (weights: {category_id:number;weight:number}[]) => { weights.forEach((w) => { const c = state.categories.find((x) => x.id === w.category_id); if (c) c.weight = Number(w.weight) || 0; }); persist(); return { ok: true as const }; },
+  createCategory: async (body: any) => { if (!body.name) throw new Error("name is required"); if (state.categories.some((c) => c.name === body.name)) throw new Error(`A category named "${body.name}" already exists.`); const metric = body.metric || null; const c: Category = { id: nextId(state.categories), name: body.name, description: body.description ?? null, weight: Number(body.weight) || 0, enabled: body.enabled !== false, scoring_method: metric ? "external" : "manual", metric, single_score: false, sort_order: Math.max(-1, ...state.categories.map((x) => x.sort_order)) + 1 }; state.categories.push(c); await persist(); return { ...c, subcriteria: [] }; },
+  updateCategory: async (id: number, body: any) => { const c = state.categories.find((x) => x.id === id); if (!c) throw new Error("Category not found"); Object.assign(c, body); if ("metric" in body) c.scoring_method = body.metric ? "external" : "manual"; await persist(); return { ...c, subcriteria: state.subcriteria.filter((s) => s.category_id === id) }; },
+  deleteCategory: async (id: number) => { state.categories = state.categories.filter((c) => c.id !== id); const subIds = new Set(state.subcriteria.filter((s) => s.category_id === id).map((s) => s.id)); state.subcriteria = state.subcriteria.filter((s) => s.category_id !== id); state.property_scores = state.property_scores.filter((s) => s.category_id !== id); state.subcriteria_scores = state.subcriteria_scores.filter((s) => !subIds.has(s.subcriterion_id)); await persist(); },
+  saveWeights: async (weights: {category_id:number;weight:number}[]) => { weights.forEach((w) => { const c = state.categories.find((x) => x.id === w.category_id); if (c) c.weight = Number(w.weight) || 0; }); await persist(); return { ok: true as const }; },
   settings: async () => ({ gradeScale: setting<GradeBand[]>("grade_scale", DEFAULT_GRADE_SCALE), raterCombine: setting<"average"|"min"|"max">("rater_combine", "average"), disagreementThreshold: setting("disagreement_threshold", DEFAULT_DISAGREEMENT_THRESHOLD), defaultGradeScale: DEFAULT_GRADE_SCALE }),
-  saveSettings: async (body: any) => { if (body.gradeScale) setSetting("grade_scale", body.gradeScale); if (body.raterCombine) setSetting("rater_combine", body.raterCombine); if (body.disagreementThreshold != null) setSetting("disagreement_threshold", Number(body.disagreementThreshold) || 0); return { ok: true as const }; },
+  saveSettings: async (body: any) => { if (body.gradeScale) setSetting("grade_scale", body.gradeScale); if (body.raterCombine) setSetting("rater_combine", body.raterCombine); if (body.disagreementThreshold != null) setSetting("disagreement_threshold", Number(body.disagreementThreshold) || 0); await persist(); return { ok: true as const }; },
   dealBreakers: async () => state.deal_breakers,
-  createDealBreaker: async (body: any) => { const id = nextId(state.deal_breakers); state.deal_breakers.push({ id, label: body.label, field: body.field, comparator: body.comparator === "min" ? "min" : "max", value: Number(body.value) || 0, enabled: !!body.enabled }); persist(); return { id }; },
-  updateDealBreaker: async (id: number, body: any) => { const d = state.deal_breakers.find((x) => x.id === id); if (d) Object.assign(d, body); persist(); return { ok: true as const }; },
-  deleteDealBreaker: async (id: number) => { state.deal_breakers = state.deal_breakers.filter((d) => d.id !== id); persist(); },
+  createDealBreaker: async (body: any) => { const id = nextId(state.deal_breakers); state.deal_breakers.push({ id, label: body.label, field: body.field, comparator: body.comparator === "min" ? "min" : "max", value: Number(body.value) || 0, enabled: !!body.enabled }); await persist(); return { id }; },
+  updateDealBreaker: async (id: number, body: any) => { const d = state.deal_breakers.find((x) => x.id === id); if (d) Object.assign(d, body); await persist(); return { ok: true as const }; },
+  deleteDealBreaker: async (id: number) => { state.deal_breakers = state.deal_breakers.filter((d) => d.id !== id); await persist(); },
   towns: async () => adapter().towns.map((t) => ({ name: t.name, county: t.county })).sort((a,b) => a.name.localeCompare(b.name)),
   distribution: async () => { const a = adapter(); return { summary: a.summary(), histogram: a.gradeDistribution(), towns: a.allScored(), settings: similaritySettings(), families: a.meta.families }; },
   previewSimilarity: async (body: any) => { const a = adapter(body); return { summary: { a_plus_raw: a.summary().a_plus_raw, one_sided: a.summary().one_sided, reference: a.summary().reference }, histogram: a.gradeDistribution(), towns: a.allScored().slice(0,30) }; },
-  saveSimilaritySettings: async (body: any) => { if (body.anchors) setSetting("curve_anchors", body.anchors); if (body.aPlusRaw !== undefined) setSetting("a_plus_raw", body.aPlusRaw); if (body.oneSided !== undefined) setSetting("one_sided", !!body.oneSided); if (body.referenceTown) setSetting("reference_town", body.referenceTown); if (body.qualityFeatures) setSetting("quality_features", body.qualityFeatures); adapter(); return { ok: true as const }; },
+  saveSimilaritySettings: async (body: any) => { if (body.anchors) setSetting("curve_anchors", body.anchors); if (body.aPlusRaw !== undefined) setSetting("a_plus_raw", body.aPlusRaw); if (body.oneSided !== undefined) setSetting("one_sided", !!body.oneSided); if (body.referenceTown) setSetting("reference_town", body.referenceTown); if (body.qualityFeatures) setSetting("quality_features", body.qualityFeatures); adapter(); await persist(); return { ok: true as const }; },
   compare: async (ids: number[]) => ids.map((id) => results().find((r) => r.property.id === id)).filter(Boolean) as PropertyResult[],
-  addSubcriterion: async (categoryId: number, body: any) => { state.subcriteria.push({ id: nextId(state.subcriteria), category_id: categoryId, name: body.name, weight: Number(body.weight) || 1, enabled: body.enabled !== false, metric: body.metric || null }); persist(); const c = state.categories.find((x) => x.id === categoryId)!; return { ...c, subcriteria: state.subcriteria.filter((s) => s.category_id === categoryId) }; },
-  updateSubcriterion: async (id: number, body: any) => { const s = state.subcriteria.find((x) => x.id === id); if (s) Object.assign(s, body); persist(); return { ok: true as const }; },
-  deleteSubcriterion: async (id: number) => { state.subcriteria = state.subcriteria.filter((s) => s.id !== id); state.subcriteria_scores = state.subcriteria_scores.filter((s) => s.subcriterion_id !== id); persist(); },
+  addSubcriterion: async (categoryId: number, body: any) => { state.subcriteria.push({ id: nextId(state.subcriteria), category_id: categoryId, name: body.name, weight: Number(body.weight) || 1, enabled: body.enabled !== false, metric: body.metric || null }); await persist(); const c = state.categories.find((x) => x.id === categoryId)!; return { ...c, subcriteria: state.subcriteria.filter((s) => s.category_id === categoryId) }; },
+  updateSubcriterion: async (id: number, body: any) => { const s = state.subcriteria.find((x) => x.id === id); if (s) Object.assign(s, body); await persist(); return { ok: true as const }; },
+  deleteSubcriterion: async (id: number) => { state.subcriteria = state.subcriteria.filter((s) => s.id !== id); state.subcriteria_scores = state.subcriteria_scores.filter((s) => s.subcriterion_id !== id); await persist(); },
   presets: async () => state.model_presets.map((p) => ({ ...p, weights: state.model_preset_weights.filter((w) => w.preset_id === p.id).map((w) => ({ category_id: w.category_id, weight: w.weight })) })),
-  createPreset: async (body: any) => { if (state.model_presets.some((p) => p.name === body.name)) throw new Error(`A preset named "${body.name}" already exists.`); const id = nextId(state.model_presets); state.model_presets.push({ id, name: body.name, description: body.description ?? null, created_at: new Date().toISOString() }); for (const w of body.weights ?? []) state.model_preset_weights.push({ preset_id: id, category_id: Number(w.category_id), weight: Number(w.weight) || 0 }); persist(); return { id }; },
-  updatePreset: async (id: number, body: any) => { const p = state.model_presets.find((x) => x.id === id); if (p) Object.assign(p, { ...(body.name != null ? { name: body.name } : {}), ...(body.description != null ? { description: body.description } : {}) }); if (Array.isArray(body.weights)) { state.model_preset_weights = state.model_preset_weights.filter((w) => w.preset_id !== id); body.weights.forEach((w: any) => state.model_preset_weights.push({ preset_id: id, category_id: Number(w.category_id), weight: Number(w.weight) || 0 })); } persist(); return { ok: true as const }; },
-  deletePreset: async (id: number) => { state.model_presets = state.model_presets.filter((p) => p.id !== id); state.model_preset_weights = state.model_preset_weights.filter((w) => w.preset_id !== id); persist(); },
+  createPreset: async (body: any) => { if (state.model_presets.some((p) => p.name === body.name)) throw new Error(`A preset named "${body.name}" already exists.`); const id = nextId(state.model_presets); state.model_presets.push({ id, name: body.name, description: body.description ?? null, created_at: new Date().toISOString() }); for (const w of body.weights ?? []) state.model_preset_weights.push({ preset_id: id, category_id: Number(w.category_id), weight: Number(w.weight) || 0 }); await persist(); return { id }; },
+  updatePreset: async (id: number, body: any) => { const p = state.model_presets.find((x) => x.id === id); if (p) Object.assign(p, { ...(body.name != null ? { name: body.name } : {}), ...(body.description != null ? { description: body.description } : {}) }); if (Array.isArray(body.weights)) { state.model_preset_weights = state.model_preset_weights.filter((w) => w.preset_id !== id); body.weights.forEach((w: any) => state.model_preset_weights.push({ preset_id: id, category_id: Number(w.category_id), weight: Number(w.weight) || 0 })); } await persist(); return { ok: true as const }; },
+  deletePreset: async (id: number) => { state.model_presets = state.model_presets.filter((p) => p.id !== id); state.model_preset_weights = state.model_preset_weights.filter((w) => w.preset_id !== id); await persist(); },
   photos: async (id: number | string) => photoRows(id).map((p) => ({ name: p.name, url: photoUrl(id,p), size: p.size ?? 0 })),
-  uploadPhotos: async (id: number | string, files: FileList | File[]) => { const key = String(id); state.photos[key] ??= []; for (const f of Array.from(files)) state.photos[key].push({ name: `${Date.now()}-${f.name}`, url: await fileData(f), size: f.size }); persist(); return { uploaded: Array.from(files).length }; },
-  deletePhoto: async (id: number | string, name: string) => { const key = String(id); state.photos[key] = (state.photos[key] ?? []).filter((p) => (typeof p === "string" ? p : p.name) !== name); persist(); },
-  addPhotosFromUrl: async (id: number | string, urls: string[]) => { const key = String(id); state.photos[key] ??= []; urls.forEach((url, i) => state.photos[key].push({ name: `${Date.now()+i}-linked-image`, url })); persist(); return { saved: urls.length, failed: [] as {url:string;reason:string}[] }; },
+  uploadPhotos: async (id: number | string, files: FileList | File[]) => { const key = String(id); state.photos[key] ??= []; for (const f of Array.from(files)) state.photos[key].push({ name: `${Date.now()}-${f.name}`, url: await fileData(f), size: f.size }); await persist(); return { uploaded: Array.from(files).length }; },
+  deletePhoto: async (id: number | string, name: string) => { const key = String(id); state.photos[key] = (state.photos[key] ?? []).filter((p) => (typeof p === "string" ? p : p.name) !== name); await persist(); },
+  addPhotosFromUrl: async (id: number | string, urls: string[]) => { const key = String(id); state.photos[key] ??= []; urls.forEach((url, i) => state.photos[key].push({ name: `${Date.now()+i}-linked-image`, url })); await persist(); return { saved: urls.length, failed: [] as {url:string;reason:string}[] }; },
   metrics: async () => [{ key: "similarity:westfield", label: `${similaritySettings().referenceTown} Similarity`, description: "Town similarity score." }, ...commuteSettings().destinations.map((d) => ({ key: `commute:${d.key}`, label: `Drive to ${d.label}`, description: `Minutes of actual driving to ${d.address}.` }))],
   commute: async () => commuteSettings(),
   refreshCommute: async (id: number | string) => refreshCommute(Number(id), true),
-  saveCommute: async (body: any) => { if (body.destinations) setSetting("commute_destinations", body.destinations); if (body.anchors) setSetting("commute_anchors", body.anchors); return { ok: true as const }; },
+  saveCommute: async (body: any) => { if (body.destinations) setSetting("commute_destinations", body.destinations); if (body.anchors) setSetting("commute_anchors", body.anchors); await persist(); return { ok: true as const }; },
   exportProperties: () => { const r = results(); const names = [...new Set(r.flatMap((x) => x.categories.map((c) => c.name)))]; const header = ["Name","Address","City","State","ZIP","Type","Status","Monthly Cost","HOA","Taxes","Insurance","Utilities","Bedrooms","Bathrooms","Square Feet","Year Built","Garage","Overall","Grade","Rank","Deal Breakers",...names.flatMap((n) => [n,`${n} Grade`]),"Notes","Pros","Cons","Visit Notes","URL"]; const rows = r.map((x) => { const p=x.property, by=new Map(x.categories.map((c)=>[c.name,c])); return [p.name,p.address,p.city,p.state,p.zip,p.property_type,p.status,p.monthly_cost,p.hoa,p.property_taxes,p.insurance,p.utilities,p.bedrooms,p.bathrooms,p.square_feet,p.year_built,p.garage_spaces,x.overall,x.grade,x.rank,x.failed_deal_breakers.join("; "),...names.flatMap((n)=>[by.get(n)?.score??null,by.get(n)?.grade??null]),p.notes,p.pros,p.cons,p.visit_notes,p.url]; }); download(`house-hunt-properties-${new Date().toISOString().slice(0,10)}.csv`,"text/csv;charset=utf-8","\ufeff"+[header,...rows].map((row)=>row.map(csvCell).join(",")).join("\r\n")); },
   exportModel: () => download(`house-hunt-model-${new Date().toISOString().slice(0,10)}.json`,"application/json",JSON.stringify({ exported:new Date().toISOString(),categories:state.categories,subcriteria:state.subcriteria,deal_breakers:state.deal_breakers,presets:state.model_presets,preset_weights:state.model_preset_weights,grade_scale:setting("grade_scale",DEFAULT_GRADE_SCALE),rater_combine:setting("rater_combine","average"),disagreement_threshold:setting("disagreement_threshold",15),similarity:similaritySettings() },null,2)),
 };
+
+const MUTATIONS = new Set([
+  "createProperty", "updateProperty", "deleteProperty", "saveScores", "saveSubScores",
+  "createCategory", "updateCategory", "deleteCategory", "saveWeights", "saveSettings",
+  "createDealBreaker", "updateDealBreaker", "deleteDealBreaker", "saveSimilaritySettings",
+  "addSubcriterion", "updateSubcriterion", "deleteSubcriterion", "createPreset", "updatePreset",
+  "deletePreset", "uploadPhotos", "deletePhoto", "addPhotosFromUrl", "refreshCommute", "saveCommute",
+]);
+
+export const api = new Proxy(rawApi, {
+  get(target, property: keyof typeof rawApi) {
+    const value = target[property];
+    if (typeof value !== "function") return value;
+    return async (...args: unknown[]) => {
+      await remoteReady;
+      if (MUTATIONS.has(String(property))) requireEditor();
+      return await (value as (...inner: unknown[]) => unknown)(...args);
+    };
+  },
+}) as typeof rawApi;
 
 async function geocode(query: string) {
   try {
@@ -222,4 +254,4 @@ async function geocode(query: string) {
   return null;
 }
 async function route(from:{lat:number;lon:number},to:{lat:number;lon:number}) { try { const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${from.lon},${from.lat};${to.lon},${to.lat}?overview=false`); const d=await r.json(); const x=d?.routes?.[0]; if(!x) return null; const miles=x.distance/1609.344, minutes=x.duration/60, crow=haversineMiles(from.lat,from.lon,to.lat,to.lon); return crow>0.5&&(miles<crow*.8||minutes<=0)?null:{miles,minutes}; } catch{return null;} }
-async function refreshCommute(id:number, force=false) { const p=state.properties.find((x)=>x.id===id); if(!p) throw new Error("Property not found"); let lat=p.latitude,lon=p.longitude,origin:"address"|"town"|null=lat!=null&&lon!=null?"address":null,origin_label:string|null=origin?exactAddress(p):null; if((lat==null||lon==null)&&p.address){const q=exactAddress(p); const g=await geocode(q); if(g){lat=g.lat;lon=g.lon;p.latitude=lat;p.longitude=lon;origin="address";origin_label=q;}} const failed:string[]=[];let routed=0; for(const d of commuteSettings().destinations){const hasExact=state.commute_cache.some((r)=>r.property_id===id&&r.destination===d.key&&(!p.address||r.origin==="address"));if(!force&&hasExact)continue;if(lat==null||lon==null){failed.push(d.label);continue;}const x=await route({lat,lon},{lat:d.lat,lon:d.lon});if(!x){failed.push(d.label);continue;}state.commute_cache=state.commute_cache.filter((r)=>!(r.property_id===id&&r.destination===d.key));state.commute_cache.push({property_id:id,destination:d.key,...x,origin:"address",origin_label,fetched_at:new Date().toISOString()});routed++;} persist();return{routed,failed,origin,origin_label,result:detail(id)}; }
+async function refreshCommute(id:number, force=false) { const p=state.properties.find((x)=>x.id===id); if(!p) throw new Error("Property not found"); let lat=p.latitude,lon=p.longitude,origin:"address"|"town"|null=lat!=null&&lon!=null?"address":null,origin_label:string|null=origin?exactAddress(p):null; if((lat==null||lon==null)&&p.address){const q=exactAddress(p); const g=await geocode(q); if(g){lat=g.lat;lon=g.lon;p.latitude=lat;p.longitude=lon;origin="address";origin_label=q;}} const failed:string[]=[];let routed=0; for(const d of commuteSettings().destinations){const hasExact=state.commute_cache.some((r)=>r.property_id===id&&r.destination===d.key&&(!p.address||r.origin==="address"));if(!force&&hasExact)continue;if(lat==null||lon==null){failed.push(d.label);continue;}const x=await route({lat,lon},{lat:d.lat,lon:d.lon});if(!x){failed.push(d.label);continue;}state.commute_cache=state.commute_cache.filter((r)=>!(r.property_id===id&&r.destination===d.key));state.commute_cache.push({property_id:id,destination:d.key,...x,origin:"address",origin_label,fetched_at:new Date().toISOString()});routed++;} await persist();return{routed,failed,origin,origin_label,result:detail(id)}; }

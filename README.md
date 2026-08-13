@@ -8,6 +8,7 @@ housing-rater/
   shared/        scoring engine + Indiana Similarity adapter (pure TS, no UI)
   backend/       express + better-sqlite3 API
   frontend/      React + Vite dashboard
+  worker/        Cloudflare Worker API + D1 migrations
   data/
     housing.db       your properties and ratings
     similarity/      snapshot of the indiana-towns dataset
@@ -28,15 +29,29 @@ Every push to `main` runs the test suite, builds the browser version, and deploy
 the workflow in `.github/workflows/pages.yml`. In the repository settings, set **Pages →
 Build and deployment → Source** to **GitHub Actions**.
 
-GitHub Pages cannot run Express or SQLite. The hosted build therefore starts from the
-committed database snapshot in `frontend/src/data/seed.json`, serves the committed photos,
-and stores subsequent edits in that visitor's browser. Those edits do not modify the
-repository or sync between browsers. Use the CSV and model exports on the Tuning page for
-portable backups.
+GitHub Pages cannot run Express or SQLite. The hosted build therefore reads its shared
+snapshot from a Cloudflare Worker backed by D1. Visitors can browse without signing in;
+changes require an editor session obtained through the site's **Unlock** control. The
+password verifier and session records remain server-side, while the browser keeps a local
+fallback cache for temporary service interruptions.
 
 To refresh the published snapshot after changing `data/housing.db` locally, regenerate
 `frontend/src/data/seed.json` and copy any new files from `data/photos/` into
 `frontend/public/data/photos/` before pushing.
+
+Cloudflare source and migrations live in `worker/`. The production database is initialized
+from the complete `frontend/src/data/seed.json` snapshot. The editor password is supplied
+only through the `HOUSE_HUNT_PASSWORD` environment variable when running
+`node scripts/initialize-cloudflare.mjs`; it is never committed.
+
+Useful backend commands:
+
+```sh
+npm run worker:types
+npm run worker:check
+npm run worker:migrate
+npm run worker:deploy
+```
 
 ## How a score is built
 
@@ -187,8 +202,8 @@ The first photo becomes the listing's lead image on the Properties page.
 ## Data
 
 `data/housing.db` is the local app's plain SQLite file. The GitHub Pages build uses the
-committed JSON snapshot and keeps changes in browser storage because static hosting cannot
-write to SQLite.
+committed JSON snapshot as its initial seed and persists shared changes through Cloudflare
+D1. Browser storage is retained only as an offline fallback cache.
 
 Tuning also has **Export**: properties CSV (facts, every category score and grade, the
 overall, one row per property) and model JSON (categories, subcriteria, weights, grade

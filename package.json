@@ -13,11 +13,17 @@
     "dev:web": "npm run dev --workspace frontend",
     "build": "npm run build --workspace frontend",
     "test": "vitest run",
+    "worker:types": "wrangler types --config worker/wrangler.jsonc worker/worker-configuration.d.ts",
+    "worker:check": "wrangler deploy --config worker/wrangler.jsonc --dry-run --outdir worker/dist",
+    "worker:migrate": "wrangler d1 migrations apply DB --config worker/wrangler.jsonc --remote",
+    "worker:deploy": "wrangler deploy --config worker/wrangler.jsonc",
     "refresh-similarity": "node scripts/refresh-similarity.mjs"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260813.1",
     "concurrently": "^8.2.2",
     "typescript": "^5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "wrangler": "^4.123.0"
   }
 }

@@ -1,9 +1,13 @@
 node_modules/
 dist/
 frontend/dist/
+worker/dist/
+worker/worker/
+.wrangler/
+.dev.vars
+worker/.seed.sql
 *.log
 .DS_Store
 Thumbs.db
 data/housing.db-shm
 data/housing.db-wal
-

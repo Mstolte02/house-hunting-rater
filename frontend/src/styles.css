@@ -108,6 +108,39 @@ h3 { font-size: 20px; }
 .nav a:hover { color: var(--ink); }
 .nav a.active { color: var(--ink); border-bottom-color: var(--clay); }
 
+.access-control {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 0; border-bottom: 1px solid var(--rule-strong); padding: 2px 0 3px;
+  background: transparent; color: var(--ink-soft); cursor: pointer;
+  font: 500 11px/1.4 var(--sans); letter-spacing: 0.02em;
+}
+.access-control:hover { color: var(--ink); border-bottom-color: var(--clay); }
+.access-control.editing { color: var(--sage); }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); }
+.sync-dot.online { background: var(--sage); }
+.sync-dot.loading { background: var(--brass); }
+.sync-dot.offline { background: var(--f); }
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+  padding: 24px; background: rgba(28, 26, 23, 0.42); backdrop-filter: blur(4px);
+}
+.unlock-dialog {
+  width: min(430px, 100%); padding: 34px; background: var(--paper);
+  border-top: 3px solid var(--clay); box-shadow: 0 24px 80px rgba(28, 26, 23, 0.24);
+}
+.unlock-dialog p { margin: 12px 0 22px; color: var(--ink-soft); font-size: 13.5px; }
+.unlock-dialog label { display: block; margin-bottom: 6px; color: var(--ink-soft); font-size: 12px; }
+.unlock-dialog input { width: 100%; }
+.unlock-dialog .err { margin-top: 14px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+@media (max-width: 760px) {
+  .topbar { flex-wrap: wrap; gap: 12px 20px; }
+  .nav { order: 3; width: 100%; margin-left: 0; overflow-x: auto; }
+  .access-control { margin-left: auto; }
+}
+
 .page-head {
   display: flex; align-items: flex-end; gap: 24px;
   margin: 30px 0 40px; padding-bottom: 24px;
