@@ -234,12 +234,13 @@ function CategoryCard({
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(cat.name);
   const [description, setDescription] = useState(cat.description ?? "");
+  const [cityScoped, setCityScoped] = useState(cat.city_scoped);
 
   const metricLabel = metrics.find((m) => m.key === cat.metric)?.label;
   const hasSubs = cat.subcriteria.length > 0;
 
   async function save() {
-    await api.updateCategory(cat.id, { name, description });
+    await api.updateCategory(cat.id, { name, description, city_scoped: cityScoped });
     setEditing(false);
     await onChanged();
   }
@@ -270,6 +271,9 @@ function CategoryCard({
               <span className="badge" style={{ marginLeft: 8 }}>
                 {cat.subcriteria.length} subcriteria
               </span>
+            )}
+            {cat.city_scoped && (
+              <span className="badge accent" style={{ marginLeft: 8 }}>rated by city</span>
             )}
           </div>
         </div>
@@ -319,6 +323,21 @@ function CategoryCard({
               ? "Scored from this category's subcriteria below."
               : "You'll type a 0–100 score for this on each property."}
           </div>
+          {!metricLabel && (
+            <label
+              className="tiny"
+              style={{ display: "flex", gap: 8, alignItems: "center", margin: "12px 0" }}
+            >
+              <input
+                type="checkbox"
+                checked={cityScoped}
+                style={{ width: "auto" }}
+                onChange={(e) => setCityScoped(e.target.checked)}
+              />
+              Rated once per city — properties inherit it from the Cities page instead of
+              being rated one at a time.
+            </label>
+          )}
           <button className="btn sm primary" onClick={save}>Save category</button>
 
           <SubcriteriaEditor cat={cat} metrics={metrics} onChanged={onChanged} />

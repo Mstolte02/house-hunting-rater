@@ -50,6 +50,13 @@ export interface Category {
    * subcriteria too.
    */
   single_score: boolean;
+  /**
+   * True when this category describes the town rather than the building — schools,
+   * safety, what's nearby. Those are rated once per city on the Cities page and every
+   * property in that city inherits the rating, instead of being retyped house by house.
+   * A property can still overrule its city (see `city_profile_id` / `city_ratings_manual`).
+   */
+  city_scoped: boolean;
   sort_order: number;
 }
 
@@ -111,12 +118,47 @@ export interface Property {
   longitude: number | null;
   /** Town name matched into the Indiana Similarity dataset. */
   similarity_town: string | null;
+  /**
+   * Which city profile supplies this property's city-scoped ratings. Null means "the
+   * one that matches `city`" — set it only to borrow another town's ratings, e.g. a
+   * house with a Greenfield address that is really out by the Fortville schools.
+   */
+  city_profile_id: number | null;
+  /** True when this property ignores city profiles entirely and is rated by hand. */
+  city_ratings_manual: boolean;
   notes: string | null;
   pros: string | null;
   cons: string | null;
   visit_notes: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * A town rated once, reused by every property in it.
+ *
+ * Schools, safety and what's nearby barely move between two houses on opposite sides of
+ * the same town, so rating them per property was six copies of the same number. The
+ * profile holds them once; properties read them and may overrule them.
+ */
+export interface CityProfile {
+  id: number;
+  name: string;
+  state: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CityScore extends RatedScore {
+  city_profile_id: number;
+  category_id: number;
+  notes: string | null;
+}
+
+export interface CitySubScore extends RatedScore {
+  city_profile_id: number;
+  subcriterion_id: number;
 }
 
 export interface DealBreaker {

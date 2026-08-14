@@ -5,7 +5,7 @@ the current SQLite database and photos, plus a browser-ready snapshot for GitHub
 
 ```
 housing-rater/
-  shared/        scoring engine + Indiana Similarity adapter (pure TS, no UI)
+  shared/        scoring engine, city profiles + Indiana Similarity adapter (pure TS, no UI)
   backend/       express + better-sqlite3 API
   frontend/      React + Vite dashboard
   worker/        Cloudflare Worker API + D1 migrations
@@ -75,10 +75,35 @@ Per category, highest precedence first:
 2. **Subcriteria** — weighted mean of the scored ones
 3. **Mark / Rachel** — combined by average (configurable to min or max), with the gap
    surfaced and flagged past a threshold
-4. **External** — supplied automatically, currently by Indiana Similarity
+4. **External** — supplied automatically: Indiana Similarity, a routed commute, or the
+   city profile below
 
 Which category gets the similarity score is decided by its `scoring_method = 'external'`
 setting, not by its name, so you can rename or repoint it without touching code.
+
+## Cities
+
+Schools, safety and what's nearby are facts about a town, not about a house. Those
+categories are marked `city_scoped` and rated once per town on the **Cities** page; every
+property in that town inherits the rating. Typing a new city on a property adds that town
+to the page automatically, so the two never drift apart.
+
+Inherited ratings arrive as ordinary external scores, which means the precedence list
+above already handles overriding them — anything typed on the property itself wins, down
+to a single subcriterion. A property can also:
+
+- **borrow another town's ratings** (`city_profile_id`), for an address that says one
+  place while its schools and shops say another, or
+- **opt out entirely** (`city_ratings_manual`) and be rated by hand.
+
+The Cities page lists which properties are currently ignoring a town's ratings and offers
+a one-click way to put them back on it. Any category can be switched between city-rated
+and per-property in Tuning; nothing is keyed off the names *Schools*, *Safety* or
+*Location* except the one-time migration of an older snapshot.
+
+That migration lifts each town's existing ratings off its properties: the town takes the
+value its properties agreed on, and a property whose own number differed keeps it as a
+visible override rather than being averaged away.
 
 ## Indiana Similarity
 

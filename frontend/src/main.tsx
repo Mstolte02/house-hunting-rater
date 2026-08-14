@@ -7,6 +7,7 @@ import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
 import PropertyForm from "./pages/PropertyForm";
 import Tuning from "./pages/Tuning";
+import Cities from "./pages/Cities";
 import Compare from "./pages/Compare";
 import "./styles.css";
 
@@ -20,6 +21,7 @@ const router = createHashRouter([
       { path: "add", element: <PropertyForm /> },
       { path: "property/:id", element: <PropertyDetail /> },
       { path: "property/:id/edit", element: <PropertyForm /> },
+      { path: "cities", element: <Cities /> },
       { path: "tuning", element: <Tuning /> },
       { path: "compare", element: <Compare /> },
     ],

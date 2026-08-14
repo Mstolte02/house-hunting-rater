@@ -122,6 +122,7 @@ export default function PropertyDetail() {
           scoring_method: c.external_score == null ? "manual" : "external",
           metric: null,
           single_score: c.single_score,
+          city_scoped: detail.city.category_ids.includes(c.category_id),
           sort_order: 0,
         },
         score: {
@@ -274,6 +275,7 @@ export default function PropertyDetail() {
                 Score each 0–100. Enter Mark and Rachel separately where you disagree —
                 the model averages them and flags a wide gap.
               </div>
+              <CitySourceLine city={detail.city} propertyCity={p.city} />
             </div>
             {(live?.categories ?? detail.categories).map((c) => (
               <CategoryRow
@@ -281,6 +283,22 @@ export default function PropertyDetail() {
                 cat={c}
                 draft={draft[c.category_id]}
                 subDraft={subDraft}
+                cityName={
+                  detail.city.category_ids.includes(c.category_id)
+                    ? detail.city.profile?.name ?? null
+                    : null
+                }
+                onUseCity={() => {
+                  setDraft((d) => ({
+                    ...d,
+                    [c.category_id]: { ...d[c.category_id], mark_score: "", rachel_score: "" },
+                  }));
+                  setSubDraft((d) => {
+                    const next = { ...d };
+                    for (const s of c.subcriteria) next[s.subcriterion_id] = { mark_score: "", rachel_score: "" };
+                    return next;
+                  });
+                }}
                 onChange={(patch) =>
                   setDraft((d) => ({
                     ...d,
@@ -397,18 +415,52 @@ export default function PropertyDetail() {
   );
 }
 
+/** The town this property's schools/safety/nearby ratings come from, in one line. */
+function CitySourceLine({
+  city, propertyCity,
+}: {
+  city: Detail["city"];
+  propertyCity: string | null;
+}) {
+  if (city.category_ids.length === 0) return null;
+  return (
+    <div className="tiny muted" style={{ marginTop: 6 }}>
+      {city.source === "manual" ? (
+        <>Rated by hand — city ratings are switched off for this property. </>
+      ) : city.profile ? (
+        <>
+          Schools, safety and what's nearby come from{" "}
+          <Link to="/cities" style={{ color: "var(--accent)" }}>{city.profile.name}</Link>
+          {city.source === "borrowed" && <> (borrowed, not {propertyCity ?? "its own city"})</>}.{" "}
+        </>
+      ) : (
+        <>
+          No <Link to="/cities" style={{ color: "var(--accent)" }}>city ratings</Link> yet for{" "}
+          {propertyCity || "this property's city"}.{" "}
+        </>
+      )}
+      Change which town it uses under Edit details.
+    </div>
+  );
+}
+
 function CategoryRow({
   cat,
   draft,
   subDraft,
+  cityName,
   onChange,
   onSubChange,
+  onUseCity,
 }: {
   cat: CategoryResult;
   draft: CatDraft | undefined;
   subDraft: Record<number, SubDraft>;
+  /** Set when this category is rated at the town level; the town supplying it. */
+  cityName: string | null;
   onChange: (patch: Partial<CatDraft>) => void;
   onSubChange: (subId: number, patch: Partial<SubDraft>) => void;
+  onUseCity: () => void;
 }) {
   const [showOverride, setShowOverride] = useState(cat.overridden);
   if (!draft) return null;
@@ -416,7 +468,16 @@ function CategoryRow({
   const hasSubs = cat.subcriteria.length > 0;
   // A category fed by a metric isn't ours to rate — the model produces it. Showing
   // rater boxes invited typing a number that would silently beat the computed value.
-  const automatic = !hasSubs && cat.external_score != null;
+  // City ratings are different: they're a starting point you're meant to be able to
+  // overrule house by house, so those keep their boxes.
+  const automatic = !hasSubs && cat.external_score != null && !cityName;
+  const typedOverCity = Boolean(cityName) && (
+    draft.mark_score !== "" || draft.rachel_score !== "" ||
+    cat.subcriteria.some((s) => {
+      const sd = subDraft[s.subcriterion_id];
+      return sd && (sd.mark_score !== "" || sd.rachel_score !== "");
+    })
+  );
 
   return (
     <div className="cat-card">
@@ -424,6 +485,11 @@ function CategoryRow({
         <div>
           <div className="cat-name">
             {cat.name} {!cat.enabled && <span className="badge">disabled</span>}
+            {cityName && (
+              <span className={`badge ${typedOverCity ? "warn" : "accent"}`} style={{ marginLeft: 8 }}>
+                {typedOverCity ? `overriding ${cityName}` : cityName}
+              </span>
+            )}
           </div>
           <div className="cat-desc">
             Weight {cat.weight}%
@@ -488,7 +554,9 @@ function CategoryRow({
                     <input
                       value={sd.mark_score}
                       inputMode="numeric"
-                      placeholder="—"
+                      // The town's number shows through an empty box, so it's obvious
+                      // what you'd be replacing.
+                      placeholder={cityName ? fmtScore(s.computed_score, 0) : "—"}
                       onChange={(e) =>
                         onSubChange(s.subcriterion_id, { mark_score: e.target.value })
                       }
@@ -496,7 +564,7 @@ function CategoryRow({
                     <input
                       value={sd.rachel_score}
                       inputMode="numeric"
-                      placeholder="—"
+                      placeholder={cityName ? fmtScore(s.computed_score, 0) : "—"}
                       onChange={(e) =>
                         onSubChange(s.subcriterion_id, { rachel_score: e.target.value })
                       }
@@ -521,7 +589,7 @@ function CategoryRow({
               value={draft.mark_score}
               onChange={(e) => onChange({ mark_score: e.target.value })}
               inputMode="numeric"
-              placeholder="0–100"
+              placeholder={cityName ? fmtScore(cat.external_score, 0) : "0–100"}
             />
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
@@ -530,7 +598,7 @@ function CategoryRow({
               value={draft.rachel_score}
               onChange={(e) => onChange({ rachel_score: e.target.value })}
               inputMode="numeric"
-              placeholder="0–100"
+              placeholder={cityName ? fmtScore(cat.external_score, 0) : "0–100"}
             />
           </div>
           <div style={{ alignSelf: "end", paddingBottom: 9 }}>
@@ -540,6 +608,25 @@ function CategoryRow({
               </span>
             )}
           </div>
+        </div>
+      )}
+
+      {cityName && (
+        <div className="tiny" style={{ marginTop: 10, color: typedOverCity ? "var(--brass)" : undefined }}>
+          {typedOverCity ? (
+            <>
+              This property is rated by hand instead of taking {cityName}'s{" "}
+              {fmtScore(cat.external_score)}.{" "}
+              <button className="btn sm ghost" onClick={onUseCity}>
+                Use {cityName}'s rating
+              </button>
+            </>
+          ) : (
+            <span className="muted">
+              Blank boxes take {cityName}'s rating. Type here only where this property
+              differs from the rest of town.
+            </span>
+          )}
         </div>
       )}
 

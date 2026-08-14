@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { api } from "../lib/api";
+import { api, type CityRow } from "../lib/api";
 import PhotosCard from "../components/PhotosCard";
+import { normalizeCityName } from "@shared/city/profiles";
+import { fmtScore } from "../lib/format";
 
 const TYPES = ["House", "Apartment", "Condo", "Townhome", "Other"];
 const STATUSES = [
@@ -20,6 +22,7 @@ const EMPTY: Form = {
   monthly_cost: "", utilities: "", deposit: "", move_in_costs: "",
   bedrooms: "", bathrooms: "", square_feet: "", lot_size: "", year_built: "",
   garage_spaces: "", parking: "", similarity_town: "",
+  city_profile_id: "", city_ratings_manual: "",
   notes: "", pros: "", cons: "", visit_notes: "",
 };
 
@@ -36,8 +39,11 @@ export default function PropertyForm() {
   const [pendingPhotos, setPendingPhotos] = useState<File[]>([]);
   const [pendingPhotoUrls, setPendingPhotoUrls] = useState<string[]>([]);
 
+  const [cities, setCities] = useState<CityRow[]>([]);
+
   useEffect(() => {
     api.towns().then(setTowns).catch(() => setTowns([]));
+    api.cities().then(setCities).catch(() => setCities([]));
   }, []);
 
   useEffect(() => {
@@ -91,6 +97,24 @@ export default function PropertyForm() {
   const cityMatches = towns.some(
     (t) => t.name.toLowerCase() === form.city.trim().toLowerCase()
   );
+
+  // Schools, safety and what's nearby come from the town, not the listing.
+  const manualRatings = form.city_ratings_manual === "true";
+  const borrowedId = form.city_profile_id ? Number(form.city_profile_id) : null;
+  const matchedCity = cities.find(
+    (c) => normalizeCityName(c.profile.name) === normalizeCityName(form.city)
+  );
+  const borrowedCity = cities.find((c) => c.profile.id === borrowedId);
+  const activeCity = manualRatings ? null : borrowedCity ?? matchedCity;
+  const cityMode = manualRatings ? "manual" : borrowedId ? String(borrowedId) : "auto";
+
+  function setCityMode(value: string) {
+    setForm((f) => ({
+      ...f,
+      city_ratings_manual: value === "manual" ? "true" : "false",
+      city_profile_id: value === "manual" || value === "auto" ? "" : value,
+    }));
+  }
 
   return (
     <form onSubmit={submit}>
@@ -187,6 +211,34 @@ export default function PropertyForm() {
             <div className="tiny faint" style={{ marginTop: 5 }}>
               Which Indiana town this property is scored against for the Location grade.
               Pick one manually if it sits outside city limits.
+            </div>
+          </div>
+
+          <div className="field">
+            <label>City ratings (schools, safety, what's nearby)</label>
+            <select value={cityMode} onChange={(e) => setCityMode(e.target.value)}>
+              <option value="auto">
+                {form.city.trim()
+                  ? `Use ${form.city.trim()}'s ratings${matchedCity ? "" : " — added when you save"}`
+                  : "Use the city typed above"}
+              </option>
+              {cities
+                .filter((c) => c.profile.id !== matchedCity?.profile.id)
+                .map((c) => (
+                  <option key={c.profile.id} value={String(c.profile.id)}>
+                    Use {c.profile.name}'s ratings instead
+                  </option>
+                ))}
+              <option value="manual">Rate this property by hand</option>
+            </select>
+            <div className="tiny faint" style={{ marginTop: 5 }}>
+              {manualRatings
+                ? "This property ignores city ratings — type schools, safety and location scores on its own page."
+                : activeCity
+                ? `Inherits ${activeCity.profile.name}: ` +
+                  activeCity.categories.map((c) => `${c.name} ${fmtScore(c.score, 0)}`).join(" · ") +
+                  ". Borrow another town when the address says one place and the schools and shops say another."
+                : "These are rated once per town on the Cities page, then inherited here. Either way you can still type a different score on this property."}
             </div>
           </div>
         </section>
