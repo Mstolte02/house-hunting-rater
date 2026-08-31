@@ -1,4 +1,4 @@
-import type { CategoryResult, Category, CityProfile, CityScore, CitySubScore, DealBreaker, Property, PropertyResult, PropertyScore, Subcriterion, SubcriterionScore } from "@shared/types";
+import type { CategoryResult, Category, CityProfile, CityScore, CitySubScore, DealBreaker, Property, PropertyResult, PropertyScore, Subcriterion, SubcriterionScore, Tracking } from "@shared/types";
 import {
   cityExternals, cityScopedCategories, evaluateCity, findCityProfileByName,
   normalizeCityName, resolveCityProfile, DEFAULT_CITY_SCOPED_CATEGORIES, type CityLink, type CityModel,
@@ -56,6 +56,11 @@ type State = {
 };
 
 const STORAGE_KEY = "house-hunt-state-v1";
+/** The application-tracking columns, written from the Tracker page. */
+const TRACKING_FIELDS: (keyof Tracking)[] = [
+  "tour_on", "applied_on", "application_fee", "decision", "available_on",
+  "lease_signed_on", "follow_up_on", "contact", "tracking_notes",
+];
 const DEFAULT_DESTINATIONS: Destination[] = [
   { key: "mark", label: "Mark's work", address: "9225 Priority Way West Dr, Indianapolis, IN 46240", lat: 39.9224008, lon: -86.1066417 },
   { key: "rachel", label: "Rachel's work", address: "Knightstown High School, 8149 W US-40, Knightstown, IN 46148", lat: 39.7925966, lon: -85.5421078 },
@@ -73,6 +78,10 @@ function normalizeState(input: unknown): State {
   s.deal_breakers = s.deal_breakers.map((x: any) => ({ ...x, enabled: !!x.enabled }));
   s.properties = s.properties.map((p: any) => ({
     ...p, city_profile_id: p.city_profile_id ?? null, city_ratings_manual: !!p.city_ratings_manual,
+    // Snapshots saved before the tracker existed have no application fields at all.
+    // Filling them with null keeps every property the same shape, so the tracker never
+    // has to tell "never entered" apart from "not there yet".
+    ...Object.fromEntries(TRACKING_FIELDS.map((k) => [k, p[k] ?? null])),
   }));
   if (!Array.isArray(s.city_profiles)) liftCityRatings(s);
   s.city_scores ??= [];
@@ -278,8 +287,8 @@ function detail(id: number | string): PropertyDetail {
   return { ...evaluated, similarity: adapter().scoreForCity(p.similarity_town ?? p.city, p.latitude, p.longitude), commutes: cs, commutes_missing: commuteSettings().destinations.filter((d) => !cached.has(d.key)).map((d) => d.label), lead_photo: photoRows(p.id)[0] ? photoUrl(p.id, photoRows(p.id)[0]) : null, city: cityContext(p) };
 }
 
-const WRITABLE = ["name","address","city","state","zip","url","property_type","status","monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","parking","latitude","longitude","similarity_town","city_profile_id","city_ratings_manual","notes","pros","cons","visit_notes"];
-const NUMERIC = new Set(["monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","latitude","longitude","city_profile_id"]);
+const WRITABLE = ["name","address","city","state","zip","url","property_type","status","monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","parking","latitude","longitude","similarity_town","city_profile_id","city_ratings_manual","notes","pros","cons","visit_notes",...TRACKING_FIELDS];
+const NUMERIC = new Set(["monthly_cost","hoa","property_taxes","insurance","utilities","deposit","move_in_costs","bedrooms","bathrooms","square_feet","lot_size","year_built","garage_spaces","latitude","longitude","city_profile_id","application_fee"]);
 const BOOLEAN = new Set(["city_ratings_manual"]);
 function picked(body: Record<string, unknown>) { const out: any = {}; for (const k of WRITABLE) if (k in body) { const v = body[k]; out[k] = BOOLEAN.has(k) ? (v === true || v === "true" || v === 1) : v === "" || v == null ? null : NUMERIC.has(k) ? (Number.isFinite(Number(v)) ? Number(v) : null) : v; } return out; }
 

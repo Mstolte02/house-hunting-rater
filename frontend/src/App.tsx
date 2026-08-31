@@ -44,6 +44,7 @@ export default function App() {
         <nav className="nav">
           <NavLink to="/" end>Properties</NavLink>
           <NavLink to="/add">Add</NavLink>
+          <NavLink to="/tracker">Tracker</NavLink>
           <NavLink to="/cities">Cities</NavLink>
           <NavLink to="/compare">Compare</NavLink>
           <NavLink to="/tuning">Tuning</NavLink>

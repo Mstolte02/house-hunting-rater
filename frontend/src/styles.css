@@ -139,6 +139,9 @@ h3 { font-size: 20px; }
   .topbar { flex-wrap: wrap; gap: 12px 20px; }
   .nav { order: 3; width: 100%; margin-left: 0; overflow-x: auto; }
   .access-control { margin-left: auto; }
+  /* Sorts and actions drop below the heading rather than off the side of the phone. */
+  .page-head { flex-wrap: wrap; gap: 16px; }
+  .page-head .spacer { display: none; }
 }
 
 .page-head {
@@ -487,3 +490,67 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
   cursor: pointer; transition: border-color 140ms, color 140ms;
 }
 .dropzone:hover { border-color: var(--clay); color: var(--clay); }
+
+/* ---------- tracker ---------- */
+
+/* Stage counts read as a row of figures, the way a paper prints a standings line. */
+.track-summary {
+  display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end;
+  margin-bottom: 22px; padding: 26px 34px;
+}
+.track-stat-n {
+  font-family: var(--serif); font-size: 30px; line-height: 1;
+  font-variant-numeric: tabular-nums; margin-bottom: 8px;
+}
+
+.track-table td { vertical-align: top; }
+.track-row { cursor: pointer; }
+.track-row:hover { background: var(--paper-deep); }
+.track-row.open { background: var(--paper-deep); box-shadow: inset 2px 0 0 var(--clay); }
+.track-row td { border-bottom: 1px solid var(--rule); }
+.track-name { font-size: 14.5px; }
+.track-row .overdue { color: var(--f); }
+.track-row .grade-cell { font-family: var(--serif); font-size: 18px; }
+
+/* Availability carries the deadline, so it is coloured by how little time is left. */
+.avail-open { color: var(--sage); }
+.avail-soon { color: var(--brass); }
+.avail-later { color: var(--ink-soft); }
+.avail-unknown { color: var(--ink-faint); }
+
+.track-editor > td { background: var(--surface); padding: 30px 20px 24px; }
+.track-editor .row { gap: 20px; margin-bottom: 4px; }
+.track-editor .field { margin-bottom: 20px; }
+.track-editor textarea { min-height: 78px; }
+
+/* One-tap "that happened today", next to the date it fills in. */
+.stamp {
+  margin-top: 7px; padding: 0; background: none; border: none; cursor: pointer;
+  font-family: var(--sans); font-size: 11px; color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.stamp:hover { color: var(--clay); border-bottom-color: var(--clay); }
+
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 900px) {
+  /* The dated middle columns go first: the stage badge already says most of what they say. */
+  .track-table th:nth-child(3), .track-table td:nth-child(3),
+  .track-table th:nth-child(4), .track-table td:nth-child(4),
+  .track-table th:nth-child(5), .track-table td:nth-child(5) { display: none; }
+  .track-table th, .track-table td { padding: 14px 12px; }
+  .track-summary { gap: 26px; padding: 22px; }
+}
+
+.track-compact { display: none; }
+
+@media (max-width: 620px) {
+  /* On a phone two questions survive as columns: which place, and what to do now.
+     Stage and availability move into the name cell instead of being cut off. */
+  .track-table th:nth-child(2), .track-table td:nth-child(2),
+  .track-table th:nth-child(6), .track-table td:nth-child(6),
+  .track-table th:nth-child(8), .track-table td:nth-child(8) { display: none; }
+  .track-compact { display: flex; align-items: center; gap: 12px; margin-top: 9px; }
+  .track-table th, .track-table td { padding: 14px 12px; }
+  .track-editor > td { padding: 22px 12px 18px; }
+}

@@ -4,6 +4,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App";
 import Properties from "./pages/Properties";
+import Tracker from "./pages/Tracker";
 import PropertyDetail from "./pages/PropertyDetail";
 import PropertyForm from "./pages/PropertyForm";
 import Tuning from "./pages/Tuning";
@@ -21,6 +22,7 @@ const router = createHashRouter([
       { path: "add", element: <PropertyForm /> },
       { path: "property/:id", element: <PropertyDetail /> },
       { path: "property/:id/edit", element: <PropertyForm /> },
+      { path: "tracker", element: <Tracker /> },
       { path: "cities", element: <Cities /> },
       { path: "tuning", element: <Tuning /> },
       { path: "compare", element: <Compare /> },

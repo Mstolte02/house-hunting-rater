@@ -36,6 +36,39 @@ export type PropertyStatus =
 /** How two people's independent scores collapse into one category score. */
 export type RaterCombine = "average" | "min" | "max";
 
+/** What the landlord said once you applied. "Pending" means they have not answered yet. */
+export type Decision = "Pending" | "Approved" | "Waitlisted" | "Denied" | "Withdrawn";
+
+/**
+ * The application side of a listing: what you have done about it, and by when.
+ *
+ * Kept apart from `status` deliberately. `status` is what you think of a place —
+ * favorite, rejected. This is what has actually happened to it: toured, applied,
+ * answered. A place can be your favorite and still be one you never applied to, and
+ * that gap is the thing this exists to catch.
+ *
+ * Dates are plain "YYYY-MM-DD" strings, so they compare correctly as text and never
+ * shift a day across timezones.
+ */
+export interface Tracking {
+  /** The tour date. A future date is booked; a past date happened. */
+  tour_on: string | null;
+  applied_on: string | null;
+  /** What the application cost, whatever came of it. */
+  application_fee: number | null;
+  /** Null until you apply. */
+  decision: Decision | null;
+  /** The date the unit is free — the one that decides whether any of this is in time. */
+  available_on: string | null;
+  lease_signed_on: string | null;
+  /** When to chase this again. This drives the tracker's "needs you now" order. */
+  follow_up_on: string | null;
+  /** Leasing agent, landlord, whoever answers the phone. */
+  contact: string | null;
+  /** Notes about the application, kept apart from notes about the building. */
+  tracking_notes: string | null;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -90,7 +123,7 @@ export interface SubcriterionScore extends RatedScore {
   subcriterion_id: number;
 }
 
-export interface Property {
+export interface Property extends Tracking {
   id: number;
   name: string;
   address: string | null;
