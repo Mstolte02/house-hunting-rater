@@ -25,13 +25,26 @@ export type MetricKey = string | null;
 
 export type PropertyType = "House" | "Apartment" | "Condo" | "Townhome" | "Other";
 
-export type PropertyStatus =
-  | "Considering"
-  | "Favorite"
-  | "Scheduled"
-  | "Visited"
-  | "Rejected"
-  | "Leased/Purchased";
+/**
+ * What you think of a place, in the order a hunt tends to run.
+ *
+ * The list lives here rather than in each page's own copy: two dropdowns that had to be
+ * edited together to stay the same list is one edit away from disagreeing.
+ *
+ * "Not Available" is the one that isn't your decision — the place was taken, pulled or
+ * priced out from under you, as opposed to "Rejected", which is you saying no.
+ */
+export const PROPERTY_STATUSES = [
+  "Considering",
+  "Favorite",
+  "Scheduled",
+  "Visited",
+  "Rejected",
+  "Not Available",
+  "Leased/Purchased",
+] as const;
+
+export type PropertyStatus = (typeof PROPERTY_STATUSES)[number];
 
 /** How two people's independent scores collapse into one category score. */
 export type RaterCombine = "average" | "min" | "max";

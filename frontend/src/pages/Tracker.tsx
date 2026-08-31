@@ -7,14 +7,11 @@ import {
   availability, compareTracking, DECISIONS, isClosed, nextAction, stageCounts,
   stageOf, STAGES, todayISO, totalFees, type Stage,
 } from "@shared/tracking/pipeline";
-import type { Decision, PropertyResult, PropertyStatus, Tracking } from "@shared/types";
+import { PROPERTY_STATUSES } from "@shared/types";
+import type { Decision, PropertyResult, Tracking } from "@shared/types";
 
 type Row = PropertyResult & { lead_photo: string | null };
 type Draft = Record<string, string>;
-
-const STATUSES: PropertyStatus[] = [
-  "Considering", "Favorite", "Scheduled", "Visited", "Rejected", "Leased/Purchased",
-];
 
 const FIELDS = [
   "tour_on", "applied_on", "application_fee", "decision", "available_on",
@@ -331,9 +328,9 @@ function TrackRow({
                 <input type="date" value={draft.lease_signed_on ?? ""} onChange={set("lease_signed_on")} />
               </div>
               <div className="field">
-                <label>Shortlist status</label>
+                <label>Status</label>
                 <select value={draft.status ?? ""} onChange={set("status")}>
-                  {STATUSES.map((s) => (
+                  {PROPERTY_STATUSES.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>

@@ -4,12 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api, type CityRow } from "../lib/api";
 import PhotosCard from "../components/PhotosCard";
 import { normalizeCityName } from "@shared/city/profiles";
+import { PROPERTY_STATUSES } from "@shared/types";
 import { fmtScore } from "../lib/format";
 
 const TYPES = ["House", "Apartment", "Condo", "Townhome", "Other"];
-const STATUSES = [
-  "Considering", "Favorite", "Scheduled", "Visited", "Rejected", "Leased/Purchased",
-];
+const STATUSES = PROPERTY_STATUSES;
 
 type Form = Record<string, string>;
 
