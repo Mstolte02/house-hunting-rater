@@ -493,9 +493,20 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
 
 /* ---------- tracker ---------- */
 
+/* The tracker is a scanning page, not a reading one: everything is centred on its
+   column so the eye runs straight down a single axis per field. */
+.track-page .page-head {
+  flex-direction: column; align-items: center; text-align: center; gap: 18px;
+}
+.track-page .page-head .sub { margin-left: auto; margin-right: auto; }
+.track-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.track-page .note, .track-page .empty { text-align: center; }
+.track-page .note { border-left: none; border-top: 1px solid var(--rule-strong); padding: 12px 0 0; font-style: normal; }
+
 /* Stage counts read as a row of figures, the way a paper prints a standings line. */
 .track-summary {
   display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end;
+  justify-content: center; text-align: center;
   margin-bottom: 22px; padding: 26px 34px;
 }
 .track-stat-n {
@@ -503,7 +514,9 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
   font-variant-numeric: tabular-nums; margin-bottom: 8px;
 }
 
-.track-table td { vertical-align: top; }
+.track-table th, .track-table td { text-align: center; vertical-align: middle; }
+/* Beats the global `td.num` right-alignment, which would break the centred grid. */
+.track-table th.num, .track-table td.num { text-align: center; }
 .track-row { cursor: pointer; }
 .track-row:hover { background: var(--paper-deep); }
 .track-row.open { background: var(--paper-deep); box-shadow: inset 2px 0 0 var(--clay); }
@@ -511,6 +524,17 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
 .track-name { font-size: 14.5px; }
 .track-row .overdue { color: var(--f); }
 .track-row .grade-cell { font-family: var(--serif); font-size: 18px; }
+.empty-filter { padding: 46px 20px; color: var(--ink-faint); }
+
+/* Status is your verdict on a place; it is set in type, not in a badge, so it never
+   competes with the stage chip sitting next to it. */
+.status-cell {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--ink-soft); white-space: nowrap;
+}
+.status-favorite { color: var(--clay); }
+.status-rejected, .status-not-available { color: var(--ink-faint); text-decoration: line-through; }
+.status-leased-purchased { color: var(--sage); }
 
 /* Availability carries the deadline, so it is coloured by how little time is left. */
 .avail-open { color: var(--sage); }
@@ -521,7 +545,14 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
 .track-editor > td { background: var(--surface); padding: 30px 20px 24px; }
 .track-editor .row { gap: 20px; margin-bottom: 4px; }
 .track-editor .field { margin-bottom: 20px; }
-.track-editor textarea { min-height: 78px; }
+.track-editor label { text-align: center; }
+/* Single-line values centre with their labels. The notes box stays left: centred
+   prose wraps to a ragged block that is genuinely harder to read. */
+.track-editor input, .track-editor select { text-align: center; }
+.track-editor textarea { min-height: 78px; text-align: left; }
+.track-editor .dialog-actions { justify-content: center; }
+.track-editor .field { display: flex; flex-direction: column; align-items: center; }
+.track-editor .field input, .track-editor .field select, .track-editor .field textarea { width: 100%; }
 
 /* One-tap "that happened today", next to the date it fills in. */
 .stamp {
@@ -532,12 +563,14 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
 .stamp:hover { color: var(--clay); border-bottom-color: var(--clay); }
 
 .table-scroll { overflow-x: auto; }
+.track-page .checkline { justify-content: center; }
+.track-page .track-foot { justify-content: center; }
 
 @media (max-width: 900px) {
-  /* The dated middle columns go first: the stage badge already says most of what they say. */
-  .track-table th:nth-child(3), .track-table td:nth-child(3),
+  /* The dated middle columns go first: the stage chip already says most of what they say. */
   .track-table th:nth-child(4), .track-table td:nth-child(4),
-  .track-table th:nth-child(5), .track-table td:nth-child(5) { display: none; }
+  .track-table th:nth-child(5), .track-table td:nth-child(5),
+  .track-table th:nth-child(6), .track-table td:nth-child(6) { display: none; }
   .track-table th, .track-table td { padding: 14px 12px; }
   .track-summary { gap: 26px; padding: 22px; }
 }
@@ -546,11 +579,15 @@ td.best { font-weight: 600; background: none; box-shadow: inset 2px 0 0 var(--cl
 
 @media (max-width: 620px) {
   /* On a phone two questions survive as columns: which place, and what to do now.
-     Stage and availability move into the name cell instead of being cut off. */
+     Status, stage and availability move into the name cell instead of being cut off. */
   .track-table th:nth-child(2), .track-table td:nth-child(2),
-  .track-table th:nth-child(6), .track-table td:nth-child(6),
-  .track-table th:nth-child(8), .track-table td:nth-child(8) { display: none; }
-  .track-compact { display: flex; align-items: center; gap: 12px; margin-top: 9px; }
+  .track-table th:nth-child(3), .track-table td:nth-child(3),
+  .track-table th:nth-child(7), .track-table td:nth-child(7),
+  .track-table th:nth-child(9), .track-table td:nth-child(9) { display: none; }
+  .track-compact {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 10px; margin-top: 9px;
+  }
   .track-table th, .track-table td { padding: 14px 12px; }
   .track-editor > td { padding: 22px 12px 18px; }
 }

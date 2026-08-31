@@ -31,6 +31,8 @@ const SORTS = [
 ] as const;
 
 const str = (v: unknown) => (v == null ? "" : String(v));
+/** "Leased/Purchased" -> "leased-purchased", so a status can carry its own colour. */
+const statusSlug = (status: string) => status.toLowerCase().replace(/[^a-z]+/g, "-");
 const shortDate = (iso: string | null) => {
   if (!iso) return "—";
   const [, m, d] = iso.split("-");
@@ -49,6 +51,8 @@ export default function Tracker() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sort, setSort] = useState<(typeof SORTS)[number]["key"]>("urgency");
+  /** "all", or one of PROPERTY_STATUSES. */
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showClosed, setShowClosed] = useState(false);
   const [open, setOpen] = useState<number | null>(null);
 
@@ -65,7 +69,11 @@ export default function Tracker() {
   const sorted = useMemo(() => {
     if (!rows) return [];
     const visible = rows.filter(
-      (r) => showClosed || !isClosed(stageOf(r.property, today))
+      (r) =>
+        (statusFilter === "all" || r.property.status === statusFilter) &&
+        // A status you picked on purpose outranks the tidy-away rule: asking for
+        // "Leased/Purchased" and being shown nothing would be the wrong answer.
+        (showClosed || statusFilter !== "all" || !isClosed(stageOf(r.property, today)))
     );
     const keyed = visible.map((r) => ({ row: r, name: r.property.name, tracking: r.property as Tracking }));
     if (sort === "urgency") {
@@ -83,7 +91,14 @@ export default function Tracker() {
       keyed.sort((a, b) => (b.row.overall ?? -1) - (a.row.overall ?? -1));
     }
     return keyed.map((k) => k.row);
-  }, [rows, sort, showClosed, today]);
+  }, [rows, sort, showClosed, statusFilter, today]);
+
+  /** Every property's status, counted once, so the filter can show its own sizes. */
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const r of rows ?? []) counts[r.property.status] = (counts[r.property.status] ?? 0) + 1;
+    return counts;
+  }, [rows]);
 
   if (error) return <div className="err">{error}</div>;
   if (!rows) return <div className="empty">Loading…</div>;
@@ -95,7 +110,7 @@ export default function Tracker() {
   const chasing = sorted.filter((r) => nextAction(r.property, today).overdue).length;
 
   return (
-    <>
+    <div className="track-page">
       <div className="page-head">
         <div>
           <h1>Tracker</h1>
@@ -104,8 +119,21 @@ export default function Tracker() {
             frees up.
           </div>
         </div>
-        <div className="spacer" />
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+        <div className="track-controls">
+          <span className="tiny faint">Status</span>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ width: "auto" }}
+          >
+            <option value="all">All statuses</option>
+            {PROPERTY_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+                {statusCounts[s] ? ` (${statusCounts[s]})` : ""}
+              </option>
+            ))}
+          </select>
           <span className="tiny faint">Sort</span>
           <select
             value={sort}
@@ -161,6 +189,7 @@ export default function Tracker() {
               <thead>
                 <tr>
                   <th>Place</th>
+                  <th>Status</th>
                   <th>Stage</th>
                   <th className="num">Toured</th>
                   <th className="num">Applied</th>
@@ -171,6 +200,13 @@ export default function Tracker() {
                 </tr>
               </thead>
               <tbody>
+                {sorted.length === 0 && (
+                  <tr>
+                    <td colSpan={9} className="empty-filter">
+                      Nothing is marked “{statusFilter}”.
+                    </td>
+                  </tr>
+                )}
                 {sorted.map((r) => (
                   <TrackRow
                     key={r.property.id}
@@ -186,7 +222,7 @@ export default function Tracker() {
             </div>
           </div>
 
-          <div className="tiny faint" style={{ marginTop: 14, display: "flex", gap: 16 }}>
+          <div className="tiny faint track-foot" style={{ marginTop: 14, display: "flex", gap: 16 }}>
             <label className="checkline" style={{ margin: 0, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>
               <input
                 type="checkbox"
@@ -195,11 +231,16 @@ export default function Tracker() {
               />
               Show finished ones
             </label>
-            {hidden > 0 && !showClosed && <span>{hidden} hidden — signed, denied or withdrawn.</span>}
+            {hidden > 0 && (statusFilter !== "all" || !showClosed) && (
+              <span>
+                {hidden} hidden —{" "}
+                {statusFilter !== "all" ? "filtered by status" : "signed, denied or withdrawn"}.
+              </span>
+            )}
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 
@@ -255,12 +296,16 @@ function TrackRow({
               .filter(Boolean)
               .join(" · ") || "No city"}
           </div>
-          {/* Phone-only: the stage and availability columns fold in here rather than
-              squeezing four columns into 375px. */}
+          {/* Phone-only: the status, stage and availability columns fold in here rather
+              than squeezing five columns into 375px. */}
           <div className="track-compact tiny">
+            <span className={`status-cell status-${statusSlug(p.status)}`}>{p.status}</span>
             <span className={`badge ${STAGE_TONE[stage]}`}>{stage}</span>
             <span className={`avail-${free.state}`}>{free.label}</span>
           </div>
+        </td>
+        <td>
+          <span className={`status-cell status-${statusSlug(p.status)}`}>{p.status}</span>
         </td>
         <td>
           <span className={`badge ${STAGE_TONE[stage]}`}>{stage}</span>
@@ -280,7 +325,7 @@ function TrackRow({
 
       {open && (
         <tr className="track-editor">
-          <td colSpan={8}>
+          <td colSpan={9}>
             <div className="row">
               <div className="field">
                 <label>Tour</label>
